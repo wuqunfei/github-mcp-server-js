@@ -53,6 +53,104 @@ export function registerGistsTools(
   );
 
   if (permission === 'read-write') {
-    // Write tools added in Task 2.
+    server.registerTool(
+      'create_gist',
+      {
+        description:
+          'Create a new gist. A gist is a shareable snippet or small file. Supply one or more files with their content; each file key is the filename (including extension). Set public to true to make the gist visible to all GitHub users, or false (default) for a secret gist (unlisted but accessible by direct URL).',
+        inputSchema: z.object({
+          files: z
+            .record(
+              z.string(),
+              z.object({
+                content: z.string().describe('File content.'),
+              }),
+            )
+            .describe(
+              'Files that make up the gist. Each key is the filename (e.g. "hello.rb") and each value is an object with a content field.',
+            ),
+          description: z.string().optional().describe('Description of the gist.'),
+          public: z
+            .boolean()
+            .optional()
+            .describe('Whether the gist is public (true) or secret (false, default).'),
+        }),
+      },
+      async ({ files, description, public: isPublic }) => {
+        try {
+          const response = await octokit.rest.gists.create({
+            files,
+            description,
+            public: isPublic,
+          });
+          return toToolResult(response.data);
+        } catch (error) {
+          return toToolError(error);
+        }
+      },
+    );
+
+    server.registerTool(
+      'update_gist',
+      {
+        description:
+          'Update an existing gist. You can change the description and/or update, rename, or delete individual files. To update a file, supply its current filename as the key with new content or a new filename. To delete a file, supply its current filename as the key with a null value. Files not mentioned in the request are left unchanged.',
+        inputSchema: z.object({
+          gist_id: z.string().describe('The unique identifier of the gist to update.'),
+          description: z.string().optional().describe('New description for the gist.'),
+          files: z
+            .record(
+              z.string(),
+              z
+                .union([
+                  z.object({
+                    content: z.string().optional().describe('New file content.'),
+                    filename: z
+                      .string()
+                      .nullable()
+                      .optional()
+                      .describe('New filename. Set to null to delete the file.'),
+                  }),
+                  z.null(),
+                ])
+                .optional(),
+            )
+            .optional()
+            .describe(
+              'Files to update. Each key is the current filename. Set a value to null to delete that file. Omit a file to leave it unchanged.',
+            ),
+        }),
+      },
+      async ({ gist_id, description, files }) => {
+        try {
+          const response = await octokit.rest.gists.update({
+            gist_id,
+            description,
+            files: files as never,
+          });
+          return toToolResult(response.data);
+        } catch (error) {
+          return toToolError(error);
+        }
+      },
+    );
+
+    server.registerTool(
+      'delete_gist',
+      {
+        description: 'Delete a gist. This action is permanent and cannot be undone. Only the gist owner can delete it.',
+        inputSchema: z.object({
+          gist_id: z.string().describe('The unique identifier of the gist to delete.'),
+        }),
+      },
+      async ({ gist_id }) => {
+        try {
+          await octokit.rest.gists.delete({ gist_id });
+          return toToolResult({ deleted: true });
+        } catch (error) {
+          return toToolError(error);
+        }
+      },
+    );
   }
 }

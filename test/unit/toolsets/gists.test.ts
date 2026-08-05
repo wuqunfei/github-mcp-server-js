@@ -109,4 +109,126 @@ describe('registerGistsTools', () => {
     const { tools } = await client.listTools();
     expect(tools.map((t) => t.name).sort()).toEqual(['get_gist', 'list_gists']);
   });
+
+  it('registers create_gist and returns the raw GitHub response as JSON', async () => {
+    nock('https://api.github.com')
+      .post('/gists', {
+        files: { 'hello.rb': { content: 'puts "Hello, World!"' } },
+        description: 'A hello-world gist',
+        public: false,
+      })
+      .reply(201, {
+        id: 'aa5a315d61ae9438b18d',
+        description: 'A hello-world gist',
+        public: false,
+        files: {
+          'hello.rb': {
+            filename: 'hello.rb',
+            content: 'puts "Hello, World!"',
+          },
+        },
+      });
+
+    const client = await connectedClient(registerGistsTools, 'read-write');
+    const result = await client.callTool({
+      name: 'create_gist',
+      arguments: {
+        files: { 'hello.rb': { content: 'puts "Hello, World!"' } },
+        description: 'A hello-world gist',
+        public: false,
+      },
+    });
+
+    expect(result.isError).toBeFalsy();
+    const text = (result.content as Array<{ type: string; text: string }>)[0]?.text ?? '';
+    expect(JSON.parse(text)).toMatchObject({
+      id: 'aa5a315d61ae9438b18d',
+      description: 'A hello-world gist',
+    });
+  });
+
+  it('registers update_gist and returns the raw GitHub response as JSON', async () => {
+    nock('https://api.github.com')
+      .patch('/gists/aa5a315d61ae9438b18d', {
+        description: 'Updated description',
+        files: { 'hello.rb': { content: 'puts "Updated!"' } },
+      })
+      .reply(200, {
+        id: 'aa5a315d61ae9438b18d',
+        description: 'Updated description',
+        files: {
+          'hello.rb': {
+            filename: 'hello.rb',
+            content: 'puts "Updated!"',
+          },
+        },
+      });
+
+    const client = await connectedClient(registerGistsTools, 'read-write');
+    const result = await client.callTool({
+      name: 'update_gist',
+      arguments: {
+        gist_id: 'aa5a315d61ae9438b18d',
+        description: 'Updated description',
+        files: { 'hello.rb': { content: 'puts "Updated!"' } },
+      },
+    });
+
+    expect(result.isError).toBeFalsy();
+    const text = (result.content as Array<{ type: string; text: string }>)[0]?.text ?? '';
+    expect(JSON.parse(text)).toMatchObject({ description: 'Updated description' });
+  });
+
+  it('registers delete_gist and returns a synthetic deleted:true result', async () => {
+    nock('https://api.github.com')
+      .delete('/gists/aa5a315d61ae9438b18d')
+      .reply(204);
+
+    const client = await connectedClient(registerGistsTools, 'read-write');
+    const result = await client.callTool({
+      name: 'delete_gist',
+      arguments: { gist_id: 'aa5a315d61ae9438b18d' },
+    });
+
+    expect(result.isError).toBeFalsy();
+    const text = (result.content as Array<{ type: string; text: string }>)[0]?.text ?? '';
+    expect(JSON.parse(text)).toEqual({ deleted: true });
+  });
+
+  it('propagates a 403 from delete_gist as an MCP tool error', async () => {
+    nock('https://api.github.com')
+      .delete('/gists/aa5a315d61ae9438b18d')
+      .reply(403, { message: 'Forbidden', documentation_url: 'https://docs.github.com/rest' });
+
+    const client = await connectedClient(registerGistsTools, 'read-write');
+    const result = await client.callTool({
+      name: 'delete_gist',
+      arguments: { gist_id: 'aa5a315d61ae9438b18d' },
+    });
+
+    expect(result.isError).toBe(true);
+    const text = (result.content as Array<{ type: string; text: string }>)[0]?.text ?? '';
+    expect(text).toContain('Forbidden');
+  });
+
+  it('does not register any write tool in read-only mode', async () => {
+    const client = await connectedClient(registerGistsTools, 'read-only');
+    const { tools } = await client.listTools();
+    const names = tools.map((t) => t.name);
+    expect(names).not.toContain('create_gist');
+    expect(names).not.toContain('update_gist');
+    expect(names).not.toContain('delete_gist');
+  });
+
+  it('registers all 5 gist tools in read-write mode', async () => {
+    const client = await connectedClient(registerGistsTools, 'read-write');
+    const { tools } = await client.listTools();
+    expect(tools.map((t) => t.name).sort()).toEqual([
+      'create_gist',
+      'delete_gist',
+      'get_gist',
+      'list_gists',
+      'update_gist',
+    ]);
+  });
 });
