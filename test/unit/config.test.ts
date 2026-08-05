@@ -29,6 +29,21 @@ describe('loadConfig', () => {
     expect(config.githubApiBaseUrl).toBe('https://api.github.com');
   });
 
+  it('treats "github.com/" with a trailing slash the same as unset', () => {
+    const config = loadConfig({ GITHUB_TOKEN: 't', GITHUB_SERVER_URL: 'github.com/' });
+    expect(config.githubApiBaseUrl).toBe('https://api.github.com');
+  });
+
+  it('treats a full "https://github.com" URL with no path the same as unset', () => {
+    const config = loadConfig({ GITHUB_TOKEN: 't', GITHUB_SERVER_URL: 'https://github.com' });
+    expect(config.githubApiBaseUrl).toBe('https://api.github.com');
+  });
+
+  it('treats "GITHUB.com" case-insensitively the same as unset', () => {
+    const config = loadConfig({ GITHUB_TOKEN: 't', GITHUB_SERVER_URL: 'GITHUB.com' });
+    expect(config.githubApiBaseUrl).toBe('https://api.github.com');
+  });
+
   it('defaults permission to read-write', () => {
     const config = loadConfig({ GITHUB_TOKEN: 't' });
     expect(config.permission).toBe('read-write');

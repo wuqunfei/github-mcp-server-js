@@ -5,13 +5,18 @@ export interface Config {
   logLevel: 'debug' | 'info' | 'error';
 }
 
-export class ConfigError extends Error {}
+export class ConfigError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ConfigError';
+  }
+}
 
 const PERMISSIONS = ['read-only', 'read-write'] as const;
 const LOG_LEVELS = ['debug', 'info', 'error'] as const;
 
 function normalizeServerUrl(rawValue: string | undefined): string {
-  if (!rawValue || rawValue === 'github.com') {
+  if (!rawValue) {
     return 'https://api.github.com';
   }
 
@@ -20,7 +25,13 @@ function normalizeServerUrl(rawValue: string | undefined): string {
     : `https://${rawValue}`;
 
   const url = new URL(withScheme);
-  if (url.pathname === '/' || url.pathname === '') {
+  const isRootPath = url.pathname === '/' || url.pathname === '';
+
+  if (isRootPath && url.hostname.toLowerCase() === 'github.com') {
+    return 'https://api.github.com';
+  }
+
+  if (isRootPath) {
     url.pathname = '/api/v3';
   }
   return url.toString().replace(/\/$/, '');
