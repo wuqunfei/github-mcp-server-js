@@ -14,7 +14,10 @@
     "whatwg",
     "Streamable",
     "mycompany",
-    "octocat"
+    "octocat",
+    "onsessionclosed",
+    "onclose",
+    "queueMicrotask"
   ],
   "ignorePaths": ["node_modules/**", "dist/**"]
 }
