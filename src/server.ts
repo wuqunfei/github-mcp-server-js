@@ -3,6 +3,7 @@ import type { Octokit } from 'octokit';
 import { registerActivityTools } from './toolsets/activity.js';
 import { registerGistsTools } from './toolsets/gists.js';
 import { registerIssuesTools } from './toolsets/issues.js';
+import { registerMiscTools } from './toolsets/misc.js';
 import { registerPackagesTools } from './toolsets/packages.js';
 import { registerPullRequestsTools } from './toolsets/pull_requests.js';
 import { registerReposTools } from './toolsets/repos.js';
@@ -26,6 +27,7 @@ export function buildServer(
   registerGistsTools(server, octokit, permission);
   registerActivityTools(server, octokit, permission);
   registerPackagesTools(server, octokit, permission);
+  registerMiscTools(server, octokit, permission);
 
   return server;
 }

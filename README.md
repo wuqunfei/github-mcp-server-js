@@ -36,6 +36,7 @@ Currently implemented:
 - `gists` — list, get, create, update, and delete gists
 - `activity` — list notifications, list starred repos, check/star/unstar a repository
 - `packages` — list and inspect GitHub Packages owned by the authenticated user (npm, maven, rubygems, docker, nuget, container)
+- `misc` — utility tools: API rate limit status, GitHub server metadata, emoji list, Markdown-to-HTML rendering
 
 Additional toolsets (actions, and more) are tracked in
 `docs/superpowers/specs/2026-08-05-github-mcp-server-design.md`.
