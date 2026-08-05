@@ -25,7 +25,9 @@
     "followee",
     "octicon",
     "unstar",
-    "rubygems"
+    "rubygems",
+    "githubassets",
+    "octo"
   ],
   "ignorePaths": ["node_modules/**", "dist/**"]
 }
