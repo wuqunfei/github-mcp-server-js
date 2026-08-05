@@ -4,6 +4,7 @@ import { registerIssuesTools } from './toolsets/issues.js';
 import { registerPullRequestsTools } from './toolsets/pull_requests.js';
 import { registerReposTools } from './toolsets/repos.js';
 import { registerSearchTools } from './toolsets/search.js';
+import { registerUsersTools } from './toolsets/users.js';
 
 const SERVER_NAME = 'github-mcp-server-js';
 const SERVER_VERSION = '0.1.0';
@@ -18,6 +19,7 @@ export function buildServer(
   registerIssuesTools(server, octokit, permission);
   registerPullRequestsTools(server, octokit, permission);
   registerSearchTools(server, octokit, permission);
+  registerUsersTools(server, octokit, permission);
 
   return server;
 }
