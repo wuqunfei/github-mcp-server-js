@@ -1,4 +1,5 @@
 // src/cli.ts
+import { pathToFileURL } from 'node:url';
 import { buildOctokitClient } from './octokit-client.js';
 import { buildServer } from './server.js';
 import { loadConfig } from './config.js';
@@ -46,7 +47,9 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((error: unknown) => {
-  process.stderr.write(`Fatal error: ${error instanceof Error ? error.message : String(error)}\n`);
-  process.exitCode = 1;
-});
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+  main().catch((error: unknown) => {
+    process.stderr.write(`Fatal error: ${error instanceof Error ? error.message : String(error)}\n`);
+    process.exitCode = 1;
+  });
+}
