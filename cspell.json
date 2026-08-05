@@ -9,7 +9,12 @@
     "tsup",
     "codespaces",
     "dependabot",
-    "toolsets"
+    "toolsets",
+    "modelcontextprotocol",
+    "whatwg",
+    "Streamable",
+    "mycompany",
+    "octocat"
   ],
   "ignorePaths": ["node_modules/**", "dist/**"]
 }
