@@ -1,25 +1,7 @@
 import type { McpServer } from '@modelcontextprotocol/server';
 import type { Octokit } from 'octokit';
 import { z } from 'zod';
-
-const paginationSchema = {
-  page: z.number().int().min(1).default(1),
-  per_page: z.number().int().min(1).max(100).default(30),
-};
-
-function toToolResult(data: unknown) {
-  return {
-    content: [{ type: 'text' as const, text: JSON.stringify(data) }],
-  };
-}
-
-function toToolError(error: unknown) {
-  const message = error instanceof Error ? error.message : String(error);
-  return {
-    isError: true,
-    content: [{ type: 'text' as const, text: message }],
-  };
-}
+import { ownerRepoSchema, paginationSchema, toToolResult, toToolError } from './common.js';
 
 export function registerReposTools(
   server: McpServer,
@@ -31,8 +13,7 @@ export function registerReposTools(
     {
       description: 'Get a GitHub repository by owner and name.',
       inputSchema: z.object({
-        owner: z.string().describe('Repository owner (user or organization login)'),
-        repo: z.string().describe('Repository name'),
+        ...ownerRepoSchema,
       }),
     },
     async ({ owner, repo }) => {
@@ -50,8 +31,7 @@ export function registerReposTools(
     {
       description: 'List branches in a GitHub repository.',
       inputSchema: z.object({
-        owner: z.string().describe('Repository owner (user or organization login)'),
-        repo: z.string().describe('Repository name'),
+        ...ownerRepoSchema,
         ...paginationSchema,
       }),
     },
@@ -70,8 +50,7 @@ export function registerReposTools(
     {
       description: 'Get a single branch in a GitHub repository.',
       inputSchema: z.object({
-        owner: z.string().describe('Repository owner (user or organization login)'),
-        repo: z.string().describe('Repository name'),
+        ...ownerRepoSchema,
         branch: z.string().describe('Branch name'),
       }),
     },
@@ -90,8 +69,7 @@ export function registerReposTools(
     {
       description: 'Get the contents of a file or directory in a GitHub repository.',
       inputSchema: z.object({
-        owner: z.string().describe('Repository owner (user or organization login)'),
-        repo: z.string().describe('Repository name'),
+        ...ownerRepoSchema,
         path: z.string().describe('Path to the file or directory'),
         ref: z.string().optional().describe('Branch, tag, or commit SHA (defaults to the default branch)'),
       }),
@@ -111,8 +89,7 @@ export function registerReposTools(
     {
       description: 'List commits in a GitHub repository.',
       inputSchema: z.object({
-        owner: z.string().describe('Repository owner (user or organization login)'),
-        repo: z.string().describe('Repository name'),
+        ...ownerRepoSchema,
         sha: z.string().optional().describe('SHA or branch to list commits from'),
         path: z.string().optional().describe('Only commits touching this file path'),
         ...paginationSchema,
@@ -140,8 +117,7 @@ export function registerReposTools(
     {
       description: 'Get a single commit in a GitHub repository.',
       inputSchema: z.object({
-        owner: z.string().describe('Repository owner (user or organization login)'),
-        repo: z.string().describe('Repository name'),
+        ...ownerRepoSchema,
         ref: z.string().describe('Commit SHA, branch, or tag'),
       }),
     },
@@ -160,8 +136,7 @@ export function registerReposTools(
     {
       description: 'List tags in a GitHub repository.',
       inputSchema: z.object({
-        owner: z.string().describe('Repository owner (user or organization login)'),
-        repo: z.string().describe('Repository name'),
+        ...ownerRepoSchema,
         ...paginationSchema,
       }),
     },
@@ -181,8 +156,7 @@ export function registerReposTools(
       {
         description: 'Create a new file or update an existing file in a GitHub repository.',
         inputSchema: z.object({
-          owner: z.string().describe('Repository owner (user or organization login)'),
-          repo: z.string().describe('Repository name'),
+          ...ownerRepoSchema,
           path: z.string().describe('Path to the file'),
           message: z.string().describe('Commit message'),
           content: z.string().describe('New file content, Base64-encoded'),
