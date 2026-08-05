@@ -33,6 +33,7 @@ Currently implemented:
 - `pull_requests` — pull request listing, creation, merging, reviews, and reviewer requests
 - `search` — code, repo, commit, issue/PR, and user search
 - `users` — user profile lookup, authenticated user info, followers, following, hovercard context
+- `gists` — list, get, create, update, and delete gists
 
 Additional toolsets (actions, and more) are tracked in
 `docs/superpowers/specs/2026-08-05-github-mcp-server-design.md`.
