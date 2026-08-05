@@ -7,7 +7,11 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { registerPullRequestsTools } from '../../../src/toolsets/pull_requests.js';
 
 async function connectedClient(permission: 'read-only' | 'read-write') {
-  const octokit = new Octokit({ auth: 'test-token', baseUrl: 'https://api.github.com' });
+  const octokit = new Octokit({
+    auth: 'test-token',
+    baseUrl: 'https://api.github.com',
+    retry: { enabled: false },
+  });
   const server = new McpServer({ name: 'test-server', version: '0.0.0' });
   registerPullRequestsTools(server, octokit, permission);
 
@@ -219,7 +223,7 @@ describe('registerPullRequestsTools', () => {
     expect(JSON.parse(text)).toEqual({ sha: 'abc123', merged: true, message: 'Pull Request successfully merged' });
   });
 
-  it.skip('propagates a merge conflict (409) as an MCP tool error with the raw GitHub message', async () => {
+  it('propagates a merge conflict (409) as an MCP tool error with the raw GitHub message', async () => {
     nock('https://api.github.com')
       .put('/repos/octocat/hello-world/pulls/1/merge')
       .reply(409, { message: 'Head branch was modified. Review and try the merge again.' });
