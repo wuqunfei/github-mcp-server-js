@@ -27,7 +27,10 @@
     "unstar",
     "rubygems",
     "githubassets",
-    "octo"
+    "octo",
+    "Oklud",
+    "Vncm",
+    "Nlcj"
   ],
   "ignorePaths": ["node_modules/**", "dist/**"]
 }
