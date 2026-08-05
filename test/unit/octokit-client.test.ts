@@ -41,4 +41,38 @@ describe('buildOctokitClient', () => {
 
     expect(capturedAuthHeader).toBe('token secret-token');
   });
+
+  it('does not retry a 409 (merge-conflict-equivalent) response', async () => {
+    // Uses a plain GET endpoint rather than the actual merge endpoint so this
+    // test only exercises the retry plugin's doNotRetry behavior, without
+    // also going through @octokit/plugin-throttling's write/notification
+    // Bottleneck queues (which add real elapsed delay unrelated to retry).
+    const octokit = buildOctokitClient(makeConfig());
+    let requestCount = 0;
+    nock('https://api.github.com')
+      .get('/octocat')
+      .reply(() => {
+        requestCount += 1;
+        return [409, { message: 'Conflict' }];
+      });
+
+    await expect(octokit.request('GET /octocat')).rejects.toMatchObject({ status: 409 });
+
+    expect(requestCount).toBe(1);
+  });
+
+  it('does not retry a 405 (not-mergeable-equivalent) response', async () => {
+    const octokit = buildOctokitClient(makeConfig());
+    let requestCount = 0;
+    nock('https://api.github.com')
+      .get('/octocat')
+      .reply(() => {
+        requestCount += 1;
+        return [405, { message: 'Method Not Allowed' }];
+      });
+
+    await expect(octokit.request('GET /octocat')).rejects.toMatchObject({ status: 405 });
+
+    expect(requestCount).toBe(1);
+  });
 });

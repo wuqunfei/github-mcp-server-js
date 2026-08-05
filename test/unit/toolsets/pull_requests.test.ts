@@ -1,25 +1,7 @@
-import { McpServer } from '@modelcontextprotocol/server';
-import { Client } from '@modelcontextprotocol/client';
-import { InMemoryTransport } from '@modelcontextprotocol/server';
-import { Octokit } from 'octokit';
 import nock from 'nock';
 import { afterEach, describe, expect, it } from 'vitest';
 import { registerPullRequestsTools } from '../../../src/toolsets/pull_requests.js';
-
-async function connectedClient(permission: 'read-only' | 'read-write') {
-  const octokit = new Octokit({
-    auth: 'test-token',
-    baseUrl: 'https://api.github.com',
-    retry: { enabled: false },
-  });
-  const server = new McpServer({ name: 'test-server', version: '0.0.0' });
-  registerPullRequestsTools(server, octokit, permission);
-
-  const client = new Client({ name: 'test-client', version: '0.0.0' });
-  const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-  await Promise.all([client.connect(clientTransport), server.connect(serverTransport)]);
-  return client;
-}
+import { connectedClient } from './test-helpers.js';
 
 describe('registerPullRequestsTools', () => {
   afterEach(() => {
@@ -32,7 +14,7 @@ describe('registerPullRequestsTools', () => {
       .query({ page: '1', per_page: '30' })
       .reply(200, [{ number: 1, title: 'first pr' }]);
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerPullRequestsTools, 'read-write');
     const result = await client.callTool({
       name: 'list_pull_requests',
       arguments: { owner: 'octocat', repo: 'hello-world' },
@@ -49,7 +31,7 @@ describe('registerPullRequestsTools', () => {
       .query({ page: '2', per_page: '10' })
       .reply(200, [{ number: 8, title: 'second page pr' }]);
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerPullRequestsTools, 'read-write');
     const result = await client.callTool({
       name: 'list_pull_requests',
       arguments: { owner: 'octocat', repo: 'hello-world', page: 2, per_page: 10 },
@@ -74,7 +56,7 @@ describe('registerPullRequestsTools', () => {
       })
       .reply(200, [{ number: 9, title: 'filtered pr' }]);
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerPullRequestsTools, 'read-write');
     const result = await client.callTool({
       name: 'list_pull_requests',
       arguments: {
@@ -97,7 +79,7 @@ describe('registerPullRequestsTools', () => {
       .get('/repos/octocat/hello-world/pulls/1')
       .reply(200, { number: 1, title: 'first pr', state: 'open' });
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerPullRequestsTools, 'read-write');
     const result = await client.callTool({
       name: 'get_pull_request',
       arguments: { owner: 'octocat', repo: 'hello-world', pull_number: 1 },
@@ -113,7 +95,7 @@ describe('registerPullRequestsTools', () => {
       .get('/repos/octocat/hello-world/pulls/999')
       .reply(404, { message: 'Not Found', documentation_url: 'https://docs.github.com/rest' });
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerPullRequestsTools, 'read-write');
     const result = await client.callTool({
       name: 'get_pull_request',
       arguments: { owner: 'octocat', repo: 'hello-world', pull_number: 999 },
@@ -130,7 +112,7 @@ describe('registerPullRequestsTools', () => {
       .query({ page: '1', per_page: '30' })
       .reply(200, [{ filename: 'src/index.ts', status: 'modified' }]);
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerPullRequestsTools, 'read-write');
     const result = await client.callTool({
       name: 'list_pull_request_files',
       arguments: { owner: 'octocat', repo: 'hello-world', pull_number: 1 },
@@ -147,7 +129,7 @@ describe('registerPullRequestsTools', () => {
       .query({ page: '1', per_page: '30' })
       .reply(200, [{ sha: 'abc123', commit: { message: 'a commit' } }]);
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerPullRequestsTools, 'read-write');
     const result = await client.callTool({
       name: 'list_pull_request_commits',
       arguments: { owner: 'octocat', repo: 'hello-world', pull_number: 1 },
@@ -164,7 +146,7 @@ describe('registerPullRequestsTools', () => {
       .query({ page: '1', per_page: '30' })
       .reply(200, [{ id: 55, state: 'APPROVED' }]);
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerPullRequestsTools, 'read-write');
     const result = await client.callTool({
       name: 'list_pull_request_reviews',
       arguments: { owner: 'octocat', repo: 'hello-world', pull_number: 1 },
@@ -180,7 +162,7 @@ describe('registerPullRequestsTools', () => {
       .post('/repos/octocat/hello-world/pulls', { head: 'octocat:feature-branch', base: 'main', title: 'a new pr' })
       .reply(201, { number: 42, title: 'a new pr' });
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerPullRequestsTools, 'read-write');
     const result = await client.callTool({
       name: 'create_pull_request',
       arguments: { owner: 'octocat', repo: 'hello-world', head: 'octocat:feature-branch', base: 'main', title: 'a new pr' },
@@ -196,7 +178,7 @@ describe('registerPullRequestsTools', () => {
       .patch('/repos/octocat/hello-world/pulls/1', { state: 'closed' })
       .reply(200, { number: 1, state: 'closed' });
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerPullRequestsTools, 'read-write');
     const result = await client.callTool({
       name: 'update_pull_request',
       arguments: { owner: 'octocat', repo: 'hello-world', pull_number: 1, state: 'closed' },
@@ -212,7 +194,7 @@ describe('registerPullRequestsTools', () => {
       .put('/repos/octocat/hello-world/pulls/1/merge', { merge_method: 'squash' })
       .reply(200, { sha: 'abc123', merged: true, message: 'Pull Request successfully merged' });
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerPullRequestsTools, 'read-write');
     const result = await client.callTool({
       name: 'merge_pull_request',
       arguments: { owner: 'octocat', repo: 'hello-world', pull_number: 1, merge_method: 'squash' },
@@ -228,7 +210,7 @@ describe('registerPullRequestsTools', () => {
       .put('/repos/octocat/hello-world/pulls/1/merge')
       .reply(409, { message: 'Head branch was modified. Review and try the merge again.' });
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerPullRequestsTools, 'read-write');
     const result = await client.callTool({
       name: 'merge_pull_request',
       arguments: { owner: 'octocat', repo: 'hello-world', pull_number: 1 },
@@ -244,7 +226,7 @@ describe('registerPullRequestsTools', () => {
       .post('/repos/octocat/hello-world/pulls/1/reviews', { event: 'APPROVE', body: 'Looks good' })
       .reply(200, { id: 77, state: 'APPROVED' });
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerPullRequestsTools, 'read-write');
     const result = await client.callTool({
       name: 'create_pull_request_review',
       arguments: { owner: 'octocat', repo: 'hello-world', pull_number: 1, event: 'APPROVE', body: 'Looks good' },
@@ -260,7 +242,7 @@ describe('registerPullRequestsTools', () => {
       .post('/repos/octocat/hello-world/pulls/1/requested_reviewers', { reviewers: ['octocat'] })
       .reply(201, { number: 1, requested_reviewers: [{ login: 'octocat' }] });
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerPullRequestsTools, 'read-write');
     const result = await client.callTool({
       name: 'request_reviewers',
       arguments: { owner: 'octocat', repo: 'hello-world', pull_number: 1, reviewers: ['octocat'] },
@@ -272,7 +254,7 @@ describe('registerPullRequestsTools', () => {
   });
 
   it('registers exactly the 5 read tools and no write tools in read-only mode', async () => {
-    const client = await connectedClient('read-only');
+    const client = await connectedClient(registerPullRequestsTools, 'read-only');
     const { tools } = await client.listTools();
     expect(tools.map((t) => t.name).sort()).toEqual([
       'get_pull_request',

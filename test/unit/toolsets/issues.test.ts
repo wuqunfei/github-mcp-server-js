@@ -1,21 +1,7 @@
-import { McpServer } from '@modelcontextprotocol/server';
-import { Client } from '@modelcontextprotocol/client';
-import { InMemoryTransport } from '@modelcontextprotocol/server';
-import { Octokit } from 'octokit';
 import nock from 'nock';
 import { afterEach, describe, expect, it } from 'vitest';
 import { registerIssuesTools } from '../../../src/toolsets/issues.js';
-
-async function connectedClient(permission: 'read-only' | 'read-write') {
-  const octokit = new Octokit({ auth: 'test-token', baseUrl: 'https://api.github.com' });
-  const server = new McpServer({ name: 'test-server', version: '0.0.0' });
-  registerIssuesTools(server, octokit, permission);
-
-  const client = new Client({ name: 'test-client', version: '0.0.0' });
-  const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-  await Promise.all([client.connect(clientTransport), server.connect(serverTransport)]);
-  return client;
-}
+import { connectedClient } from './test-helpers.js';
 
 describe('registerIssuesTools', () => {
   afterEach(() => {
@@ -28,7 +14,7 @@ describe('registerIssuesTools', () => {
       .query({ page: '1', per_page: '30' })
       .reply(200, [{ number: 1, title: 'first issue' }]);
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerIssuesTools, 'read-write');
     const result = await client.callTool({
       name: 'list_issues',
       arguments: { owner: 'octocat', repo: 'hello-world' },
@@ -45,7 +31,7 @@ describe('registerIssuesTools', () => {
       .query({ page: '2', per_page: '10' })
       .reply(200, [{ number: 5, title: 'second page issue' }]);
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerIssuesTools, 'read-write');
     const result = await client.callTool({
       name: 'list_issues',
       arguments: { owner: 'octocat', repo: 'hello-world', page: 2, per_page: 10 },
@@ -70,7 +56,7 @@ describe('registerIssuesTools', () => {
       })
       .reply(200, [{ number: 7, title: 'filtered issue' }]);
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerIssuesTools, 'read-write');
     const result = await client.callTool({
       name: 'list_issues',
       arguments: {
@@ -93,7 +79,7 @@ describe('registerIssuesTools', () => {
       .get('/repos/octocat/hello-world/issues/1')
       .reply(200, { number: 1, title: 'first issue', state: 'open' });
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerIssuesTools, 'read-write');
     const result = await client.callTool({
       name: 'get_issue',
       arguments: { owner: 'octocat', repo: 'hello-world', issue_number: 1 },
@@ -109,7 +95,7 @@ describe('registerIssuesTools', () => {
       .get('/repos/octocat/hello-world/issues/999')
       .reply(404, { message: 'Not Found', documentation_url: 'https://docs.github.com/rest' });
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerIssuesTools, 'read-write');
     const result = await client.callTool({
       name: 'get_issue',
       arguments: { owner: 'octocat', repo: 'hello-world', issue_number: 999 },
@@ -126,7 +112,7 @@ describe('registerIssuesTools', () => {
       .query({ page: '1', per_page: '30' })
       .reply(200, [{ id: 10, body: 'a comment' }]);
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerIssuesTools, 'read-write');
     const result = await client.callTool({
       name: 'list_comments',
       arguments: { owner: 'octocat', repo: 'hello-world', issue_number: 1 },
@@ -143,7 +129,7 @@ describe('registerIssuesTools', () => {
       .query({ page: '1', per_page: '30' })
       .reply(200, [{ name: 'bug', color: 'ff0000' }]);
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerIssuesTools, 'read-write');
     const result = await client.callTool({
       name: 'list_labels',
       arguments: { owner: 'octocat', repo: 'hello-world' },
@@ -160,7 +146,7 @@ describe('registerIssuesTools', () => {
       .query({ page: '1', per_page: '30' })
       .reply(200, [{ name: 'help wanted' }]);
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerIssuesTools, 'read-write');
     const result = await client.callTool({
       name: 'list_labels_on_issue',
       arguments: { owner: 'octocat', repo: 'hello-world', issue_number: 1 },
@@ -176,7 +162,7 @@ describe('registerIssuesTools', () => {
       .post('/repos/octocat/hello-world/issues', { title: 'a new bug' })
       .reply(201, { number: 42, title: 'a new bug' });
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerIssuesTools, 'read-write');
     const result = await client.callTool({
       name: 'create_issue',
       arguments: { owner: 'octocat', repo: 'hello-world', title: 'a new bug' },
@@ -192,7 +178,7 @@ describe('registerIssuesTools', () => {
       .patch('/repos/octocat/hello-world/issues/1', { state: 'closed' })
       .reply(200, { number: 1, state: 'closed' });
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerIssuesTools, 'read-write');
     const result = await client.callTool({
       name: 'update_issue',
       arguments: { owner: 'octocat', repo: 'hello-world', issue_number: 1, state: 'closed' },
@@ -208,7 +194,7 @@ describe('registerIssuesTools', () => {
       .post('/repos/octocat/hello-world/issues/1/comments', { body: 'a comment' })
       .reply(201, { id: 99, body: 'a comment' });
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerIssuesTools, 'read-write');
     const result = await client.callTool({
       name: 'add_comment',
       arguments: { owner: 'octocat', repo: 'hello-world', issue_number: 1, body: 'a comment' },
@@ -224,7 +210,7 @@ describe('registerIssuesTools', () => {
       .post('/repos/octocat/hello-world/issues/1/labels', { labels: ['bug'] })
       .reply(200, [{ name: 'bug' }]);
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerIssuesTools, 'read-write');
     const result = await client.callTool({
       name: 'add_labels',
       arguments: { owner: 'octocat', repo: 'hello-world', issue_number: 1, labels: ['bug'] },
@@ -240,7 +226,7 @@ describe('registerIssuesTools', () => {
       .delete('/repos/octocat/hello-world/issues/1/labels/bug')
       .reply(200, [{ name: 'enhancement' }]);
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerIssuesTools, 'read-write');
     const result = await client.callTool({
       name: 'remove_label',
       arguments: { owner: 'octocat', repo: 'hello-world', issue_number: 1, name: 'bug' },
@@ -256,7 +242,7 @@ describe('registerIssuesTools', () => {
       .put('/repos/octocat/hello-world/issues/1/lock', { lock_reason: 'resolved' })
       .reply(204);
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerIssuesTools, 'read-write');
     const result = await client.callTool({
       name: 'lock_issue',
       arguments: { owner: 'octocat', repo: 'hello-world', issue_number: 1, lock_reason: 'resolved' },
@@ -270,7 +256,7 @@ describe('registerIssuesTools', () => {
       .delete('/repos/octocat/hello-world/issues/1/lock')
       .reply(204);
 
-    const client = await connectedClient('read-write');
+    const client = await connectedClient(registerIssuesTools, 'read-write');
     const result = await client.callTool({
       name: 'unlock_issue',
       arguments: { owner: 'octocat', repo: 'hello-world', issue_number: 1 },
@@ -280,7 +266,7 @@ describe('registerIssuesTools', () => {
   });
 
   it('registers exactly the 5 read tools and no write tools in read-only mode', async () => {
-    const client = await connectedClient('read-only');
+    const client = await connectedClient(registerIssuesTools, 'read-only');
     const { tools } = await client.listTools();
     expect(tools.map((t) => t.name).sort()).toEqual([
       'get_issue',
