@@ -1,0 +1,44 @@
+{
+  "name": "github-mcp-server-js",
+  "version": "0.1.0",
+  "description": "A GitHub MCP server built on octokit.js and the MCP TypeScript SDK v2",
+  "type": "module",
+  "bin": {
+    "github-mcp-server-js": "dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx src/cli.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "spellcheck": "cspell \"**/*.{ts,md}\"",
+    "test": "vitest run",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.0.0",
+    "@whatwg-node/server": "^0.11.0",
+    "octokit": "^5.0.5",
+    "zod": "^4.2.0"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/client": "^2.0.0",
+    "@types/node": "^24.0.0",
+    "cspell": "^10.0.1",
+    "eslint": "^10.8.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.3.0",
+    "nock": "^14.0.17",
+    "tsup": "^8.5.1",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "typescript-eslint": "^8.66.0",
+    "vitest": "^4.1.10"
+  }
+}

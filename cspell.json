@@ -1,0 +1,15 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "octokit",
+    "mcpb",
+    "gitleaks",
+    "cspell",
+    "tsup",
+    "codespaces",
+    "dependabot",
+    "toolsets"
+  ],
+  "ignorePaths": ["node_modules/**", "dist/**"]
+}
