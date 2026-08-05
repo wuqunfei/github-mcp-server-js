@@ -34,6 +34,7 @@ Currently implemented:
 - `search` — code, repo, commit, issue/PR, and user search
 - `users` — user profile lookup, authenticated user info, followers, following, hovercard context
 - `gists` — list, get, create, update, and delete gists
+- `activity` — list notifications, list starred repos, check/star/unstar a repository
 
 Additional toolsets (actions, and more) are tracked in
 `docs/superpowers/specs/2026-08-05-github-mcp-server-design.md`.
