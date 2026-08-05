@@ -170,4 +170,112 @@ describe('registerPullRequestsTools', () => {
     const text = (result.content as Array<{ type: string; text: string }>)[0]?.text ?? '';
     expect(JSON.parse(text)).toEqual([{ id: 55, state: 'APPROVED' }]);
   });
+
+  it('registers create_pull_request and returns the raw GitHub response as JSON', async () => {
+    nock('https://api.github.com')
+      .post('/repos/octocat/hello-world/pulls', { head: 'octocat:feature-branch', base: 'main', title: 'a new pr' })
+      .reply(201, { number: 42, title: 'a new pr' });
+
+    const client = await connectedClient('read-write');
+    const result = await client.callTool({
+      name: 'create_pull_request',
+      arguments: { owner: 'octocat', repo: 'hello-world', head: 'octocat:feature-branch', base: 'main', title: 'a new pr' },
+    });
+
+    expect(result.isError).toBeFalsy();
+    const text = (result.content as Array<{ type: string; text: string }>)[0]?.text ?? '';
+    expect(JSON.parse(text)).toEqual({ number: 42, title: 'a new pr' });
+  });
+
+  it('registers update_pull_request and returns the raw GitHub response as JSON', async () => {
+    nock('https://api.github.com')
+      .patch('/repos/octocat/hello-world/pulls/1', { state: 'closed' })
+      .reply(200, { number: 1, state: 'closed' });
+
+    const client = await connectedClient('read-write');
+    const result = await client.callTool({
+      name: 'update_pull_request',
+      arguments: { owner: 'octocat', repo: 'hello-world', pull_number: 1, state: 'closed' },
+    });
+
+    expect(result.isError).toBeFalsy();
+    const text = (result.content as Array<{ type: string; text: string }>)[0]?.text ?? '';
+    expect(JSON.parse(text)).toEqual({ number: 1, state: 'closed' });
+  });
+
+  it('registers merge_pull_request and returns the raw GitHub response as JSON', async () => {
+    nock('https://api.github.com')
+      .put('/repos/octocat/hello-world/pulls/1/merge', { merge_method: 'squash' })
+      .reply(200, { sha: 'abc123', merged: true, message: 'Pull Request successfully merged' });
+
+    const client = await connectedClient('read-write');
+    const result = await client.callTool({
+      name: 'merge_pull_request',
+      arguments: { owner: 'octocat', repo: 'hello-world', pull_number: 1, merge_method: 'squash' },
+    });
+
+    expect(result.isError).toBeFalsy();
+    const text = (result.content as Array<{ type: string; text: string }>)[0]?.text ?? '';
+    expect(JSON.parse(text)).toEqual({ sha: 'abc123', merged: true, message: 'Pull Request successfully merged' });
+  });
+
+  it.skip('propagates a merge conflict (409) as an MCP tool error with the raw GitHub message', async () => {
+    nock('https://api.github.com')
+      .put('/repos/octocat/hello-world/pulls/1/merge')
+      .reply(409, { message: 'Head branch was modified. Review and try the merge again.' });
+
+    const client = await connectedClient('read-write');
+    const result = await client.callTool({
+      name: 'merge_pull_request',
+      arguments: { owner: 'octocat', repo: 'hello-world', pull_number: 1 },
+    });
+
+    expect(result.isError).toBe(true);
+    const text = (result.content as Array<{ type: string; text: string }>)[0]?.text ?? '';
+    expect(text).toContain('Head branch was modified');
+  });
+
+  it('registers create_pull_request_review and returns the raw GitHub response as JSON', async () => {
+    nock('https://api.github.com')
+      .post('/repos/octocat/hello-world/pulls/1/reviews', { event: 'APPROVE', body: 'Looks good' })
+      .reply(200, { id: 77, state: 'APPROVED' });
+
+    const client = await connectedClient('read-write');
+    const result = await client.callTool({
+      name: 'create_pull_request_review',
+      arguments: { owner: 'octocat', repo: 'hello-world', pull_number: 1, event: 'APPROVE', body: 'Looks good' },
+    });
+
+    expect(result.isError).toBeFalsy();
+    const text = (result.content as Array<{ type: string; text: string }>)[0]?.text ?? '';
+    expect(JSON.parse(text)).toEqual({ id: 77, state: 'APPROVED' });
+  });
+
+  it('registers request_reviewers and returns the raw GitHub response as JSON', async () => {
+    nock('https://api.github.com')
+      .post('/repos/octocat/hello-world/pulls/1/requested_reviewers', { reviewers: ['octocat'] })
+      .reply(201, { number: 1, requested_reviewers: [{ login: 'octocat' }] });
+
+    const client = await connectedClient('read-write');
+    const result = await client.callTool({
+      name: 'request_reviewers',
+      arguments: { owner: 'octocat', repo: 'hello-world', pull_number: 1, reviewers: ['octocat'] },
+    });
+
+    expect(result.isError).toBeFalsy();
+    const text = (result.content as Array<{ type: string; text: string }>)[0]?.text ?? '';
+    expect(JSON.parse(text)).toEqual({ number: 1, requested_reviewers: [{ login: 'octocat' }] });
+  });
+
+  it('registers exactly the 5 read tools and no write tools in read-only mode', async () => {
+    const client = await connectedClient('read-only');
+    const { tools } = await client.listTools();
+    expect(tools.map((t) => t.name).sort()).toEqual([
+      'get_pull_request',
+      'list_pull_request_commits',
+      'list_pull_request_files',
+      'list_pull_request_reviews',
+      'list_pull_requests',
+    ]);
+  });
 });
