@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import nock from 'nock';
+import { afterEach, describe, expect, it } from 'vitest';
 import type { Config } from '../../src/config.js';
 import { buildOctokitClient } from '../../src/octokit-client.js';
 
@@ -13,6 +14,10 @@ function makeConfig(overrides: Partial<Config> = {}): Config {
 }
 
 describe('buildOctokitClient', () => {
+  afterEach(() => {
+    nock.cleanAll();
+  });
+
   it('configures the client with the given base URL', () => {
     const octokit = buildOctokitClient(
       makeConfig({ githubApiBaseUrl: 'https://github.mycompany.com/api/v3' }),
@@ -22,9 +27,18 @@ describe('buildOctokitClient', () => {
     );
   });
 
-  it('configures the client with the given token', () => {
+  it('configures the client with the given token', async () => {
     const octokit = buildOctokitClient(makeConfig({ githubToken: 'secret-token' }));
-    const headers = octokit.request.endpoint.DEFAULTS.headers as Record<string, string>;
-    expect(headers.authorization).toContain('secret-token');
+    let capturedAuthHeader: string | undefined;
+    nock('https://api.github.com')
+      .get('/octocat')
+      .reply(function () {
+        capturedAuthHeader = this.req.headers['authorization'] as string;
+        return [200, {}];
+      });
+
+    await octokit.request('GET /octocat');
+
+    expect(capturedAuthHeader).toBe('token secret-token');
   });
 });
