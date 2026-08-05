@@ -24,7 +24,12 @@ export function parseArgs(argv: string[]): CliArgs {
       }
       transport = value;
     } else if (arg.startsWith('--port=')) {
-      port = Number.parseInt(arg.slice('--port='.length), 10);
+      const value = arg.slice('--port='.length);
+      const parsed = Number.parseInt(value, 10);
+      if (!Number.isInteger(parsed) || String(parsed) !== value || parsed < 1 || parsed > 65535) {
+        throw new Error(`Invalid --port value: "${value}" (expected an integer between 1 and 65535)`);
+      }
+      port = parsed;
     }
   }
 

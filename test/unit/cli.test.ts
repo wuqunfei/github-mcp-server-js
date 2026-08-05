@@ -21,4 +21,12 @@ describe('parseArgs', () => {
   it('throws on an unknown transport value', () => {
     expect(() => parseArgs(['--transport=carrier-pigeon'])).toThrow();
   });
+
+  it('throws on a non-numeric port value', () => {
+    expect(() => parseArgs(['--transport=http', '--port=abc'])).toThrow();
+  });
+
+  it('throws on a port value out of range', () => {
+    expect(() => parseArgs(['--transport=http', '--port=99999'])).toThrow();
+  });
 });
