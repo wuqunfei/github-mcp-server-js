@@ -24,7 +24,8 @@
     "monalisa",
     "followee",
     "octicon",
-    "unstar"
+    "unstar",
+    "rubygems"
   ],
   "ignorePaths": ["node_modules/**", "dist/**"]
 }
