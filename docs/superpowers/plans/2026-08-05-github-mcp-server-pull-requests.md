@@ -1,6 +1,6 @@
 # github-mcp-server-js — `pull_requests` Toolset Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Add the `pull_requests` toolset (10 tools covering PR listing/inspection, creation/update, merging, reviews, and reviewer requests) to `github-mcp-server-js`, following the exact structural, permission-gating, and response/error pattern established by the `repos` and `issues` toolsets.
 
@@ -85,7 +85,7 @@ Response bodies (raw passthrough, no exceptions needed — unlike `issues.lock`/
 
 This task implements the 5 read-only tools. Task 2 adds the 5 write tools to the same file and function.
 
-- [ ] **Step 1: Add `pullNumberSchema` to `src/toolsets/common.ts`**
+- [x] **Step 1: Add `pullNumberSchema` to `src/toolsets/common.ts`**
 
 Add this export alongside the existing `issueNumberSchema`:
 
@@ -133,7 +133,7 @@ export function toToolError(error: unknown) {
 }
 ```
 
-- [ ] **Step 2: Write the failing tests for the read tools**
+- [x] **Step 2: Write the failing tests for the read tools**
 
 Create `test/unit/toolsets/pull_requests.test.ts`:
 
@@ -313,12 +313,12 @@ describe('registerPullRequestsTools', () => {
 });
 ```
 
-- [ ] **Step 3: Run test to verify it fails**
+- [x] **Step 3: Run test to verify it fails**
 
 Run: `npm test -- pull_requests`
 Expected: FAIL with a module-not-found error for `../../../src/toolsets/pull_requests.js` (the file doesn't exist yet).
 
-- [ ] **Step 4: Create `src/toolsets/pull_requests.ts` with the 5 read tools**
+- [x] **Step 4: Create `src/toolsets/pull_requests.ts` with the 5 read tools**
 
 ```typescript
 import type { McpServer } from '@modelcontextprotocol/server';
@@ -453,17 +453,17 @@ export function registerPullRequestsTools(
 
 Note on the `eslint-disable-next-line` comment above the `permission` parameter: at this point in the plan `permission` is not yet referenced (no write tools exist yet in this file), which would otherwise fail ESLint's `no-unused-vars` rule. Task 2 makes `permission` genuinely used by wrapping the 5 write tools in `if (permission === 'read-write') { ... }` — at that point, remove this disable comment entirely (mirroring exactly what happened with `issues.ts`'s `permission` parameter in the `issues` toolset plan's Task 2→Task 3 transition, confirmed by re-reading the committed `src/toolsets/issues.ts`, which carries no such comment).
 
-- [ ] **Step 5: Run test to verify it passes**
+- [x] **Step 5: Run test to verify it passes**
 
 Run: `npm test -- pull_requests`
 Expected: PASS (8 tests).
 
-- [ ] **Step 6: Typecheck and lint**
+- [x] **Step 6: Typecheck and lint**
 
 Run: `npm run typecheck && npm run lint`
 Expected: both PASS with zero errors.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/toolsets/common.ts src/toolsets/pull_requests.ts test/unit/toolsets/pull_requests.test.ts
@@ -482,7 +482,7 @@ git commit -m "feat: add pull_requests toolset read tools"
 - Consumes: `ownerRepoSchema`, `paginationSchema`, `pullNumberSchema`, `toToolResult`, `toToolError` from `./common.js` (Task 1); the same `registerPullRequestsTools` function body from Task 1, extended in place.
 - Produces: the complete `registerPullRequestsTools` (10 tools total), ready for Task 3 to wire into `server.ts`.
 
-- [ ] **Step 1: Write the failing tests for the write tools and the permission-gating test**
+- [x] **Step 1: Write the failing tests for the write tools and the permission-gating test**
 
 Add these tests inside the existing `describe('registerPullRequestsTools', ...)` block in `test/unit/toolsets/pull_requests.test.ts`, after the `list_pull_request_reviews` test and before the closing `});`:
 
@@ -596,12 +596,12 @@ Add these tests inside the existing `describe('registerPullRequestsTools', ...)`
   });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- pull_requests`
 Expected: FAIL — the write-tool tests fail because `create_pull_request` etc. aren't registered yet, and the permission-gating test fails because Task 1's placeholder registers only the 5 read tools with no gating logic at all (so it currently passes trivially; re-verify it still asserts the correct 5-tool list after this task's changes, since a passing-for-the-wrong-reason test is not a green light).
 
-- [ ] **Step 3: Remove the `eslint-disable` comment and add the 5 write tools to `src/toolsets/pull_requests.ts`**
+- [x] **Step 3: Remove the `eslint-disable` comment and add the 5 write tools to `src/toolsets/pull_requests.ts`**
 
 Remove the `// eslint-disable-next-line @typescript-eslint/no-unused-vars` line directly above the `permission` parameter in the function signature — `permission` becomes genuinely used by the `if` block added below, so the disable comment is no longer needed:
 
@@ -778,17 +778,17 @@ Then, immediately before the function's closing `}`, insert the 5 write tools:
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm test -- pull_requests`
 Expected: PASS (15 tests: 8 from Task 1 + 7 new).
 
-- [ ] **Step 5: Typecheck, lint, and full suite**
+- [x] **Step 5: Typecheck, lint, and full suite**
 
 Run: `npm run typecheck && npm run lint && npm test`
 Expected: all PASS. Full suite total: 49 (after the `issues` plan) + 15 = 64 tests.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/toolsets/pull_requests.ts test/unit/toolsets/pull_requests.test.ts
@@ -806,7 +806,7 @@ git commit -m "feat: add pull_requests toolset write tools (create, update, merg
 - Consumes: `registerPullRequestsTools(server, octokit, permission)` from Task 2.
 - Produces: nothing new — this is the final integration point.
 
-- [ ] **Step 1: Modify `src/server.ts`**
+- [x] **Step 1: Modify `src/server.ts`**
 
 Current content:
 
@@ -858,17 +858,17 @@ export function buildServer(
 }
 ```
 
-- [ ] **Step 2: Run the full test suite**
+- [x] **Step 2: Run the full test suite**
 
 Run: `npm test`
 Expected: PASS, same 64 tests as after Task 2 (no test exercises `server.ts` directly, following the same precedent as the `issues` plan's Task 4 — `buildServer` is a thin, non-branching composition function verified by the CLI smoke test below plus the pre-existing CLI smoke test from the core plan).
 
-- [ ] **Step 3: Typecheck, lint, build**
+- [x] **Step 3: Typecheck, lint, build**
 
 Run: `npm run typecheck && npm run lint && npm run build`
 Expected: all PASS. The build step confirms `dist/cli.js`'s bundled dependency graph now transitively includes `pull_requests.ts`.
 
-- [ ] **Step 4: Manual end-to-end smoke test**
+- [x] **Step 4: Manual end-to-end smoke test**
 
 Run:
 ```bash
@@ -882,7 +882,7 @@ curl -s -X POST http://localhost:3992/mcp \
 
 Expected: a `200` response containing `"serverInfo":{"name":"github-mcp-server-js"...}`. Then send a `tools/list` request (reusing the `mcp-session-id` response header from the `initialize` call) and confirm the tool list includes `get_repository` (from `repos`), `list_issues` (from `issues`), and `list_pull_requests` (from this plan's `pull_requests` toolset) — proving all three toolsets are live in the same server with no duplicate-registration crash. Kill the background process afterward (`kill %1`).
 
-- [ ] **Step 5: Update the README's Toolsets section**
+- [x] **Step 5: Update the README's Toolsets section**
 
 Modify `README.md`'s "Currently implemented" list (the same section the `issues` plan's final review flagged as going stale) to add:
 
@@ -892,7 +892,7 @@ Modify `README.md`'s "Currently implemented" list (the same section the `issues`
 
 and remove `pull requests` from the trailing "Additional toolsets ... are tracked in" sentence's implicit backlog, since it's now implemented.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/server.ts README.md

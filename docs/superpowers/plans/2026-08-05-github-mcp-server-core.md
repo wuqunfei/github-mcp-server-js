@@ -1,6 +1,6 @@
 # github-mcp-server-js — Core Infrastructure Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Build the working core of github-mcp-server-js: config loading, the shared Octokit client, the `McpServer` wiring with permission-gated tool registration, both transports (stdio + HTTP), the CLI entrypoint, pre-commit/CI tooling, and one fully-implemented toolset (`repos`) that establishes the pattern every other toolset (in later plans) will copy.
 
@@ -78,7 +78,7 @@ Each toolset file has one responsibility: register its own tools against an alre
 **Interfaces:**
 - Produces: an installable Node project with `npm run build`, `npm run typecheck`, `npm run lint`, `npm run test`, `npm run spellcheck` scripts that later tasks rely on.
 
-- [ ] **Step 1: Create `package.json`**
+- [x] **Step 1: Create `package.json`**
 
 ```json
 {
@@ -127,7 +127,7 @@ Each toolset file has one responsibility: register its own tools against an alre
 }
 ```
 
-- [ ] **Step 2: Create `tsconfig.json`**
+- [x] **Step 2: Create `tsconfig.json`**
 
 ```json
 {
@@ -147,7 +147,7 @@ Each toolset file has one responsibility: register its own tools against an alre
 }
 ```
 
-- [ ] **Step 3: Create `tsup.config.ts`**
+- [x] **Step 3: Create `tsup.config.ts`**
 
 ```typescript
 import { defineConfig } from 'tsup';
@@ -164,7 +164,7 @@ export default defineConfig({
 });
 ```
 
-- [ ] **Step 4: Create `.gitignore`**
+- [x] **Step 4: Create `.gitignore`**
 
 ```
 node_modules/
@@ -173,7 +173,7 @@ dist/
 .env
 ```
 
-- [ ] **Step 5: Create `eslint.config.js`**
+- [x] **Step 5: Create `eslint.config.js`**
 
 ```javascript
 import tseslint from 'typescript-eslint';
@@ -191,7 +191,7 @@ export default tseslint.config(
 );
 ```
 
-- [ ] **Step 6: Create `cspell.json`**
+- [x] **Step 6: Create `cspell.json`**
 
 ```json
 {
@@ -211,17 +211,17 @@ export default tseslint.config(
 }
 ```
 
-- [ ] **Step 7: Install dependencies**
+- [x] **Step 7: Install dependencies**
 
 Run: `npm install`
 Expected: installs succeed, `package-lock.json` is created.
 
-- [ ] **Step 8: Verify scripts run on an empty `src/`**
+- [x] **Step 8: Verify scripts run on an empty `src/`**
 
 Run: `npm run typecheck`
 Expected: fails or is a no-op since `src/cli.ts` doesn't exist yet — that's fine, this step just confirms `tsc` executes without a config error. If it errors with "no inputs were found", that's expected and will resolve once Task 2 adds files.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add package.json tsconfig.json tsup.config.ts .gitignore eslint.config.js cspell.json package-lock.json
@@ -250,7 +250,7 @@ git commit -m "chore: scaffold project (package.json, tsconfig, tsup, eslint, cs
   ```
 - Consumes: nothing (pure function of an env-like object, passed explicitly for testability — do not read `process.env` directly inside `loadConfig`).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```typescript
 // test/unit/config.test.ts
@@ -312,12 +312,12 @@ describe('loadConfig', () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npx vitest run test/unit/config.test.ts`
 Expected: FAIL — `Cannot find module '../../src/config.js'`
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```typescript
 // src/config.ts
@@ -376,12 +376,12 @@ export function loadConfig(env: Record<string, string | undefined>): Config {
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npx vitest run test/unit/config.test.ts`
 Expected: PASS (10 tests)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/config.ts test/unit/config.test.ts
@@ -403,7 +403,7 @@ git commit -m "feat: add env var config loading and validation"
   export function buildOctokitClient(config: Config): Octokit;
   ```
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```typescript
 // test/unit/octokit-client.test.ts
@@ -439,12 +439,12 @@ describe('buildOctokitClient', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run test/unit/octokit-client.test.ts`
 Expected: FAIL — `Cannot find module '../../src/octokit-client.js'`
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```typescript
 // src/octokit-client.ts
@@ -459,12 +459,12 @@ export function buildOctokitClient(config: Config): Octokit {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run test/unit/octokit-client.test.ts`
 Expected: PASS (2 tests)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/octokit-client.ts test/unit/octokit-client.test.ts
@@ -492,7 +492,7 @@ git commit -m "feat: build Octokit client from config"
 
 This module has no branching logic worth a unit test beyond "does it write to stderr, not stdout" — that's an integration property exercised implicitly once the CLI runs in Task 8. No dedicated test file; write the implementation directly.
 
-- [ ] **Step 1: Write the implementation**
+- [x] **Step 1: Write the implementation**
 
 ```typescript
 // src/logger.ts
@@ -527,12 +527,12 @@ export function createLogger(logLevel: Config['logLevel']): Logger {
 }
 ```
 
-- [ ] **Step 2: Verify it compiles**
+- [x] **Step 2: Verify it compiles**
 
 Run: `npx tsc --noEmit`
 Expected: no errors related to `src/logger.ts` (errors about missing `src/cli.ts` etc. from other not-yet-written files are expected at this point and will clear as later tasks land).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/logger.ts
@@ -576,7 +576,7 @@ Implements 8 tools from the design's `repos` toolset row: `get_repository`, `lis
 | `get_commit` | `octokit.rest.repos.getCommit` | GET `/repos/{owner}/{repo}/commits/{ref}` | read |
 | `list_tags` | `octokit.rest.repos.listTags` | GET `/repos/{owner}/{repo}/tags` | read |
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```typescript
 // test/unit/toolsets/repos.test.ts
@@ -684,12 +684,12 @@ describe('registerReposTools', () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npx vitest run test/unit/toolsets/repos.test.ts`
 Expected: FAIL — `Cannot find module '../../../src/toolsets/repos.js'`
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```typescript
 // src/toolsets/repos.ts
@@ -909,12 +909,12 @@ export function registerReposTools(
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npx vitest run test/unit/toolsets/repos.test.ts`
 Expected: PASS (6 tests)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/toolsets/repos.ts test/unit/toolsets/repos.test.ts
@@ -936,7 +936,7 @@ git commit -m "feat: implement repos toolset (8 tools) with permission gating"
   ```
 - Future toolset plans will add one line per new toolset to this function's body — this is the seam later plans extend.
 
-- [ ] **Step 1: Write the implementation**
+- [x] **Step 1: Write the implementation**
 
 No dedicated unit test for this file: it's a thin composition function with no branching logic of its own (the branching lives inside each toolset). Its behavior is exercised end-to-end by the CLI smoke test in Task 8.
 
@@ -961,12 +961,12 @@ export function buildServer(
 }
 ```
 
-- [ ] **Step 2: Verify it compiles**
+- [x] **Step 2: Verify it compiles**
 
 Run: `npx tsc --noEmit`
 Expected: no errors related to `src/server.ts` (errors about missing `src/cli.ts` are expected until Task 8).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/server.ts
@@ -994,7 +994,7 @@ git commit -m "feat: wire McpServer construction and toolset registration"
 
 No dedicated unit tests for transports: they are thin adapters over SDK-provided and third-party classes (`StdioServerTransport`, `WebStandardStreamableHTTPServerTransport`, `createServerAdapter`) whose own behavior is already tested upstream. They're exercised by the CLI smoke test in Task 8.
 
-- [ ] **Step 1: Write `stdio.ts`**
+- [x] **Step 1: Write `stdio.ts`**
 
 ```typescript
 // src/transports/stdio.ts
@@ -1007,7 +1007,7 @@ export async function runStdio(server: McpServer): Promise<void> {
 }
 ```
 
-- [ ] **Step 2: Write `http.ts`**
+- [x] **Step 2: Write `http.ts`**
 
 ```typescript
 // src/transports/http.ts
@@ -1031,12 +1031,12 @@ export async function runHttp(server: McpServer, port: number): Promise<void> {
 }
 ```
 
-- [ ] **Step 3: Verify it compiles**
+- [x] **Step 3: Verify it compiles**
 
 Run: `npx tsc --noEmit`
 Expected: no errors related to `src/transports/stdio.ts` or `src/transports/http.ts` (errors about missing `src/cli.ts` are expected until Task 8).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/transports/stdio.ts src/transports/http.ts
@@ -1055,7 +1055,7 @@ git commit -m "feat: add stdio and HTTP transport adapters"
 - Consumes: `loadConfig` (Task 2), `buildOctokitClient` (Task 3), `createLogger` (Task 4), `buildServer` (Task 6), `runStdio`/`runHttp` (Task 7).
 - Produces: the executable entrypoint referenced by `package.json`'s `bin` field.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 This test exercises `parseArgs` in isolation (the pure, testable part of `cli.ts`); the full process startup (env loading + transport connection) is exercised manually in Step 5 rather than under vitest, since it opens real stdio/network handles.
 
@@ -1086,12 +1086,12 @@ describe('parseArgs', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run test/unit/cli.test.ts`
 Expected: FAIL — `Cannot find module '../../src/cli.js'`
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```typescript
 // src/cli.ts
@@ -1148,12 +1148,12 @@ main().catch((error: unknown) => {
 });
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run test/unit/cli.test.ts`
 Expected: PASS (4 tests)
 
-- [ ] **Step 5: Manual smoke test of the full stack**
+- [x] **Step 5: Manual smoke test of the full stack**
 
 Run:
 ```bash
@@ -1168,7 +1168,7 @@ kill %1
 ```
 Expected: the `curl` response is a JSON-RPC result containing `serverInfo.name: "github-mcp-server-js"` (exact response shape may include an `Mcp-Session-Id` header and SSE framing — confirm the process starts, logs to stderr, and responds without crashing; do not treat minor protocol-envelope differences as a failure).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/cli.ts test/unit/cli.test.ts
@@ -1193,17 +1193,17 @@ the `gitleaks` binary directly (assumed to be on `PATH`), not via `npx`.
 
 **Interfaces:** none — this task wires existing tools together, no application code.
 
-- [ ] **Step 1: Install the gitleaks binary locally**
+- [x] **Step 1: Install the gitleaks binary locally**
 
 Run: `brew install gitleaks`
 Expected: `gitleaks version` prints a version number. If Homebrew is unavailable, download the appropriate binary from the releases page above and ensure it's on `PATH`.
 
-- [ ] **Step 2: Initialize husky**
+- [x] **Step 2: Initialize husky**
 
 Run: `npx husky init`
 Expected: creates `.husky/pre-commit` and adds a `prepare` script to `package.json` (already present from Task 1).
 
-- [ ] **Step 3: Add `lint-staged` config to `package.json`**
+- [x] **Step 3: Add `lint-staged` config to `package.json`**
 
 Add this top-level key to `package.json`:
 
@@ -1216,7 +1216,7 @@ Add this top-level key to `package.json`:
 }
 ```
 
-- [ ] **Step 4: Write `.husky/pre-commit`**
+- [x] **Step 4: Write `.husky/pre-commit`**
 
 ```sh
 npx tsc --noEmit
@@ -1228,7 +1228,7 @@ else
 fi
 ```
 
-- [ ] **Step 5: Write `.gitleaks.toml`**
+- [x] **Step 5: Write `.gitleaks.toml`**
 
 ```toml
 title = "gitleaks config for github-mcp-server-js"
@@ -1237,7 +1237,7 @@ title = "gitleaks config for github-mcp-server-js"
 useDefault = true
 ```
 
-- [ ] **Step 6: Verify the hook blocks a secret (requires gitleaks installed from Step 1)**
+- [x] **Step 6: Verify the hook blocks a secret (requires gitleaks installed from Step 1)**
 
 Run:
 ```bash
@@ -1252,7 +1252,7 @@ git reset HEAD src/leak-test.ts
 rm src/leak-test.ts /tmp/leak-test.ts
 ```
 
-- [ ] **Step 7: Commit the hook setup**
+- [x] **Step 7: Commit the hook setup**
 
 ```bash
 git add .husky/pre-commit .gitleaks.toml package.json
@@ -1268,7 +1268,7 @@ git commit -m "chore: add pre-commit hooks (typecheck, lint, spellcheck, secret 
 
 **Interfaces:** none.
 
-- [ ] **Step 1: Write `.github/workflows/ci.yml`**
+- [x] **Step 1: Write `.github/workflows/ci.yml`**
 
 ```yaml
 name: CI
@@ -1311,12 +1311,12 @@ jobs:
       - run: npm run build
 ```
 
-- [ ] **Step 2: Verify locally that each step's underlying command succeeds**
+- [x] **Step 2: Verify locally that each step's underlying command succeeds**
 
 Run: `npm run typecheck && npm run lint && npm run spellcheck && npm test && npm run build`
 Expected: all pass (this validates the workflow's commands before pushing; the workflow itself only runs on GitHub Actions).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add .github/workflows/ci.yml
@@ -1332,7 +1332,7 @@ git commit -m "ci: add GitHub Actions workflow (typecheck, lint, spellcheck, aud
 
 **Interfaces:** none.
 
-- [ ] **Step 1: Write `README.md`**
+- [x] **Step 1: Write `README.md`**
 
 ```markdown
 # github-mcp-server-js
@@ -1368,7 +1368,7 @@ Additional toolsets (issues, pull requests, actions, and more) are tracked in
 `docs/superpowers/specs/2026-08-05-github-mcp-server-design.md`.
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git add README.md

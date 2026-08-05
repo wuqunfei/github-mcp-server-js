@@ -1,6 +1,6 @@
 # github-mcp-server-js — `issues` Toolset Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Add the `issues` toolset (10 tools covering issue CRUD, comments, labels, and locking) to `github-mcp-server-js`, and extract the shared toolset helpers (`paginationSchema`, `toToolResult`, `toToolError`, the repeated `owner`/`repo` schema fields) out of `src/toolsets/repos.ts` into a new `src/toolsets/common.ts` module so every toolset — this one and the 14 still to come — imports them instead of re-declaring them.
 
@@ -56,7 +56,7 @@ github-mcp-server-js/
   - `toToolResult(data: unknown): { content: [{ type: 'text', text: string }] }`
   - `toToolError(error: unknown): { isError: true, content: [{ type: 'text', text: string }] }`
 
-- [ ] **Step 1: Write the failing test for the pure helpers**
+- [x] **Step 1: Write the failing test for the pure helpers**
 
 Create `test/unit/toolsets/common.test.ts`:
 
@@ -92,12 +92,12 @@ describe('toToolError', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- common`
 Expected: FAIL with a module-not-found error for `../../../src/toolsets/common.js` (the file doesn't exist yet).
 
-- [ ] **Step 3: Create `src/toolsets/common.ts`**
+- [x] **Step 3: Create `src/toolsets/common.ts`**
 
 ```typescript
 import { z } from 'zod';
@@ -127,12 +127,12 @@ export function toToolError(error: unknown) {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm test -- common`
 Expected: PASS (3 tests).
 
-- [ ] **Step 5: Update `src/toolsets/repos.ts` to import from `common.ts` instead of declaring its own copies**
+- [x] **Step 5: Update `src/toolsets/repos.ts` to import from `common.ts` instead of declaring its own copies**
 
 Replace the top of `src/toolsets/repos.ts` (currently lines 1-22, the imports plus the local `paginationSchema`/`toToolResult`/`toToolError` declarations) with:
 
@@ -162,17 +162,17 @@ and `list_branches`'s schema:
 
 Apply the same `...ownerRepoSchema` substitution to `get_branch`, `get_file_contents`, `list_commits`, `get_commit`, `list_tags`, and `create_or_update_file` — every tool in the file currently repeats the literal `owner: z.string().describe(...)` / `repo: z.string().describe(...)` pair. Do not change any handler logic, tool names, descriptions, or the octokit calls themselves — this step only removes duplication in the schema declarations and the three helper functions.
 
-- [ ] **Step 6: Run the full test suite to verify nothing broke**
+- [x] **Step 6: Run the full test suite to verify nothing broke**
 
 Run: `npm test`
 Expected: PASS — all pre-existing `repos.test.ts` tests (6 tests) still pass unchanged, since the wire-level behavior (parameter names, descriptions, JSON shape) is identical; only where the schema/helpers are declared changed. Plus the 3 new `common.test.ts` tests. Total: 30 + 3 = 33 tests passing (the core plan left 30 passing after its final fix round).
 
-- [ ] **Step 7: Typecheck and lint**
+- [x] **Step 7: Typecheck and lint**
 
 Run: `npm run typecheck && npm run lint`
 Expected: both PASS with zero errors.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add src/toolsets/common.ts src/toolsets/repos.ts test/unit/toolsets/common.test.ts
@@ -193,7 +193,7 @@ git commit -m "refactor: extract shared toolset helpers into common.ts"
 
 This task implements the 5 read-only tools. Task 3 adds the 5 write tools to the same file and function.
 
-- [ ] **Step 1: Write the failing tests for the read tools**
+- [x] **Step 1: Write the failing tests for the read tools**
 
 Create `test/unit/toolsets/issues.test.ts`:
 
@@ -341,12 +341,12 @@ describe('registerIssuesTools', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- issues`
 Expected: FAIL with a module-not-found error for `../../../src/toolsets/issues.js`.
 
-- [ ] **Step 3: Create `src/toolsets/issues.ts` with the 5 read tools**
+- [x] **Step 3: Create `src/toolsets/issues.ts` with the 5 read tools**
 
 ```typescript
 import type { McpServer } from '@modelcontextprotocol/server';
@@ -489,17 +489,17 @@ export function registerIssuesTools(
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm test -- issues`
 Expected: PASS (7 tests).
 
-- [ ] **Step 5: Typecheck and lint**
+- [x] **Step 5: Typecheck and lint**
 
 Run: `npm run typecheck && npm run lint`
 Expected: both PASS with zero errors. Note: an empty `if (permission === 'read-write') { }` block with only a comment may trigger an ESLint "no-empty" warning — if it does, remove the `if` block entirely for now and re-add it in Task 3 rather than suppressing the lint rule.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/toolsets/issues.ts test/unit/toolsets/issues.test.ts
@@ -520,7 +520,7 @@ git commit -m "feat: add issues toolset read tools (list_issues, get_issue, list
 
 That's 5 read tools (Task 2) + 7 write tools (this task) = 12 tools, slightly above the spec's ~10 estimate — the spec explicitly calls tool counts "estimates... refined during implementation," and `lock`/`unlock` are cheap, single-purpose, high-value tools worth keeping separate rather than folding into `update_issue`.
 
-- [ ] **Step 1: Write the failing tests for the write tools**
+- [x] **Step 1: Write the failing tests for the write tools**
 
 Append to `test/unit/toolsets/issues.test.ts`, inside the existing `describe('registerIssuesTools', ...)` block, right before the closing `});`:
 
@@ -666,12 +666,12 @@ Append to `test/unit/toolsets/issues.test.ts`, inside the existing `describe('re
   });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- issues`
 Expected: FAIL — the 7 new write-tool tests fail with "Tool <name> not found" (`ProtocolError`) since the tools don't exist yet; the 2 permission-check tests may pass vacuously (nothing to find is nothing registered) or fail depending on assertion direction — re-run after Step 3 regardless.
 
-- [ ] **Step 3: Add the write tools to `src/toolsets/issues.ts`**
+- [x] **Step 3: Add the write tools to `src/toolsets/issues.ts`**
 
 Replace the `if (permission === 'read-write') { // Write tools added in Task 3. }` placeholder (or, if Task 2's lint step removed the empty block entirely, add this block at the end of `registerIssuesTools`, right before its closing `}`) with:
 
@@ -850,17 +850,17 @@ Replace the `if (permission === 'read-write') { // Write tools added in Task 3. 
 
 Note on `lock_issue`/`unlock_issue`: GitHub's API returns `204 No Content` for both endpoints (confirmed against `@octokit/openapi-types`'s `issues/lock` and `issues/unlock` operation definitions — both have `responses: { 204: { content: never } }`), so there is no response body to pass through. Returning a small synthetic `{ locked: true }` / `{ locked: false }` object (rather than `response.data`, which octokit types as `never`/`undefined` here) keeps `toToolResult`'s contract of "always returns a JSON text block" consistent across every tool in the codebase — this is a deliberate, minimal exception to the "raw response body, unmodified" rule, justified by there being no body to return, not a design choice to summarize data.
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm test -- issues`
 Expected: PASS (16 tests: 7 from Task 2 + 9 new).
 
-- [ ] **Step 5: Typecheck, lint, and full suite**
+- [x] **Step 5: Typecheck, lint, and full suite**
 
 Run: `npm run typecheck && npm run lint && npm test`
 Expected: all PASS. Full suite total: 33 (after Task 1) + 16 = 49 tests.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/toolsets/issues.ts test/unit/toolsets/issues.test.ts
@@ -878,7 +878,7 @@ git commit -m "feat: add issues toolset write tools (create, update, comment, la
 - Consumes: `registerIssuesTools(server, octokit, permission)` from Task 3.
 - Produces: nothing new — this is the final integration point; no later task depends on `server.ts`'s internals beyond what Task 6 (core plan) already established.
 
-- [ ] **Step 1: Modify `src/server.ts`**
+- [x] **Step 1: Modify `src/server.ts`**
 
 Current content:
 
@@ -926,17 +926,17 @@ export function buildServer(
 }
 ```
 
-- [ ] **Step 2: Run the full test suite**
+- [x] **Step 2: Run the full test suite**
 
 Run: `npm test`
 Expected: PASS, same 49 tests as after Task 3 (no test exercises `server.ts` directly today — the core plan's Task 6 relied on controller-level verification plus the CLI smoke test in Task 8, and this task follows the same precedent since `buildServer` is a thin, non-branching composition function).
 
-- [ ] **Step 3: Typecheck, lint, build**
+- [x] **Step 3: Typecheck, lint, build**
 
 Run: `npm run typecheck && npm run lint && npm run build`
 Expected: all PASS. The build step matters here specifically — it confirms the bundled CLI output actually includes the new toolset (tsup performs a full re-bundle from `src/cli.ts`'s dependency graph, which now transitively includes `issues.ts`).
 
-- [ ] **Step 4: Manual end-to-end smoke test**
+- [x] **Step 4: Manual end-to-end smoke test**
 
 Run:
 ```bash
@@ -950,7 +950,7 @@ curl -s -X POST http://localhost:3991/mcp \
 
 Expected: a `200` response containing `"serverInfo":{"name":"github-mcp-server-js"...}`. Then send a `tools/list` request (reusing the `mcp-session-id` response header from the `initialize` call) and confirm the tool list includes both `get_repository` (from the `repos` toolset) and `list_issues` (from this plan's `issues` toolset) — proving both toolsets are live in the same server. Kill the background process afterward (`kill %1`).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/server.ts
