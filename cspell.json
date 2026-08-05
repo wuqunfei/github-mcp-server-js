@@ -23,7 +23,8 @@
     "hovercard",
     "monalisa",
     "followee",
-    "octicon"
+    "octicon",
+    "unstar"
   ],
   "ignorePaths": ["node_modules/**", "dist/**"]
 }
