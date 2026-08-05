@@ -6,7 +6,8 @@ import { ownerRepoSchema, paginationSchema, toToolResult, toToolError } from './
 export function registerIssuesTools(
   server: McpServer,
   octokit: Octokit,
-  _permission: 'read-only' | 'read-write',
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  permission: 'read-only' | 'read-write',
 ): void {
   server.registerTool(
     'list_issues',
