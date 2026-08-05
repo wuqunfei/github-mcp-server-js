@@ -26,6 +26,10 @@ npx github-mcp-server-js --transport=http --port=3000
 
 ## Toolsets
 
-Currently implemented: `repos` (repository, branch, commit, tag, and file-contents tools).
-Additional toolsets (issues, pull requests, actions, and more) are tracked in
+Currently implemented:
+
+- `repos` — repository, branch, commit, tag, and file-contents tools
+- `issues` — issue CRUD, comments, labels, and conversation locking
+
+Additional toolsets (pull requests, actions, and more) are tracked in
 `docs/superpowers/specs/2026-08-05-github-mcp-server-design.md`.

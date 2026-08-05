@@ -56,6 +56,38 @@ describe('registerIssuesTools', () => {
     expect(JSON.parse(text)).toEqual([{ number: 5, title: 'second page issue' }]);
   });
 
+  it('passes issue filter params through to list_issues', async () => {
+    const scope = nock('https://api.github.com')
+      .get('/repos/octocat/hello-world/issues')
+      .query({
+        state: 'closed',
+        labels: 'bug,help wanted',
+        assignee: 'octocat',
+        sort: 'updated',
+        direction: 'desc',
+        page: '1',
+        per_page: '30',
+      })
+      .reply(200, [{ number: 7, title: 'filtered issue' }]);
+
+    const client = await connectedClient('read-write');
+    const result = await client.callTool({
+      name: 'list_issues',
+      arguments: {
+        owner: 'octocat',
+        repo: 'hello-world',
+        state: 'closed',
+        labels: 'bug,help wanted',
+        assignee: 'octocat',
+        sort: 'updated',
+        direction: 'desc',
+      },
+    });
+
+    expect(result.isError).toBeFalsy();
+    expect(scope.isDone()).toBe(true);
+  });
+
   it('registers get_issue and returns the raw GitHub response as JSON', async () => {
     nock('https://api.github.com')
       .get('/repos/octocat/hello-world/issues/1')
@@ -247,35 +279,15 @@ describe('registerIssuesTools', () => {
     expect(result.isError).toBeFalsy();
   });
 
-  it('does not register any write tool in read-only mode', async () => {
+  it('registers exactly the 5 read tools and no write tools in read-only mode', async () => {
     const client = await connectedClient('read-only');
     const { tools } = await client.listTools();
-    const names = tools.map((tool) => tool.name);
-    expect(names).not.toEqual(
-      expect.arrayContaining([
-        'create_issue',
-        'update_issue',
-        'add_comment',
-        'add_labels',
-        'remove_label',
-        'lock_issue',
-        'unlock_issue',
-      ]),
-    );
-  });
-
-  it('registers all 5 read-only tools regardless of permission', async () => {
-    const client = await connectedClient('read-only');
-    const { tools } = await client.listTools();
-    const names = tools.map((tool) => tool.name);
-    expect(names).toEqual(
-      expect.arrayContaining([
-        'list_issues',
-        'get_issue',
-        'list_comments',
-        'list_labels',
-        'list_labels_on_issue',
-      ]),
-    );
+    expect(tools.map((t) => t.name).sort()).toEqual([
+      'get_issue',
+      'list_comments',
+      'list_issues',
+      'list_labels',
+      'list_labels_on_issue',
+    ]);
   });
 });

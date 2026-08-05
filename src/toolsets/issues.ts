@@ -1,7 +1,7 @@
 import type { McpServer } from '@modelcontextprotocol/server';
 import type { Octokit } from 'octokit';
 import { z } from 'zod';
-import { ownerRepoSchema, paginationSchema, toToolResult, toToolError } from './common.js';
+import { ownerRepoSchema, issueNumberSchema, paginationSchema, toToolResult, toToolError } from './common.js';
 
 export function registerIssuesTools(
   server: McpServer,
@@ -48,7 +48,7 @@ export function registerIssuesTools(
       description: 'Get a single issue in a GitHub repository.',
       inputSchema: z.object({
         ...ownerRepoSchema,
-        issue_number: z.number().int().describe('Issue number'),
+        ...issueNumberSchema,
       }),
     },
     async ({ owner, repo, issue_number }) => {
@@ -67,7 +67,7 @@ export function registerIssuesTools(
       description: 'List comments on a GitHub issue.',
       inputSchema: z.object({
         ...ownerRepoSchema,
-        issue_number: z.number().int().describe('Issue number'),
+        ...issueNumberSchema,
         ...paginationSchema,
       }),
     },
@@ -112,7 +112,7 @@ export function registerIssuesTools(
       description: 'List the labels currently applied to a GitHub issue.',
       inputSchema: z.object({
         ...ownerRepoSchema,
-        issue_number: z.number().int().describe('Issue number'),
+        ...issueNumberSchema,
         ...paginationSchema,
       }),
     },
@@ -168,7 +168,7 @@ export function registerIssuesTools(
         description: 'Update an existing issue in a GitHub repository.',
         inputSchema: z.object({
           ...ownerRepoSchema,
-          issue_number: z.number().int().describe('Issue number'),
+          ...issueNumberSchema,
           title: z.string().optional().describe('New issue title'),
           body: z.string().optional().describe('New issue body/description'),
           state: z.enum(['open', 'closed']).optional().describe('New issue state'),
@@ -206,7 +206,7 @@ export function registerIssuesTools(
         description: 'Add a comment to a GitHub issue.',
         inputSchema: z.object({
           ...ownerRepoSchema,
-          issue_number: z.number().int().describe('Issue number'),
+          ...issueNumberSchema,
           body: z.string().describe('Comment body'),
         }),
       },
@@ -226,7 +226,7 @@ export function registerIssuesTools(
         description: "Add labels to a GitHub issue, keeping the issue's existing labels.",
         inputSchema: z.object({
           ...ownerRepoSchema,
-          issue_number: z.number().int().describe('Issue number'),
+          ...issueNumberSchema,
           labels: z.array(z.string()).describe('Label names to add'),
         }),
       },
@@ -246,7 +246,7 @@ export function registerIssuesTools(
         description: 'Remove a single label from a GitHub issue.',
         inputSchema: z.object({
           ...ownerRepoSchema,
-          issue_number: z.number().int().describe('Issue number'),
+          ...issueNumberSchema,
           name: z.string().describe('Name of the label to remove'),
         }),
       },
@@ -266,7 +266,7 @@ export function registerIssuesTools(
         description: 'Lock a GitHub issue conversation to collaborators only.',
         inputSchema: z.object({
           ...ownerRepoSchema,
-          issue_number: z.number().int().describe('Issue number'),
+          ...issueNumberSchema,
           lock_reason: z
             .enum(['off-topic', 'too heated', 'resolved', 'spam'])
             .optional()
@@ -289,7 +289,7 @@ export function registerIssuesTools(
         description: 'Unlock a previously locked GitHub issue conversation.',
         inputSchema: z.object({
           ...ownerRepoSchema,
-          issue_number: z.number().int().describe('Issue number'),
+          ...issueNumberSchema,
         }),
       },
       async ({ owner, repo, issue_number }) => {

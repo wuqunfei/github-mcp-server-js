@@ -10,6 +10,10 @@ export const ownerRepoSchema = {
   repo: z.string().describe('Repository name'),
 };
 
+export const issueNumberSchema = {
+  issue_number: z.number().int().describe('Issue number'),
+};
+
 export function toToolResult(data: unknown) {
   return {
     content: [{ type: 'text' as const, text: JSON.stringify(data) }],
