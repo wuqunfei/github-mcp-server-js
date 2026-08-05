@@ -30,6 +30,7 @@ Currently implemented:
 
 - `repos` — repository, branch, commit, tag, and file-contents tools
 - `issues` — issue CRUD, comments, labels, and conversation locking
+- `pull_requests` — pull request listing, creation, merging, reviews, and reviewer requests
 
-Additional toolsets (pull requests, actions, and more) are tracked in
+Additional toolsets (actions, and more) are tracked in
 `docs/superpowers/specs/2026-08-05-github-mcp-server-design.md`.
