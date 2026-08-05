@@ -19,7 +19,11 @@
     "onclose",
     "queueMicrotask",
     "tetris",
-    "tomasz"
+    "tomasz",
+    "hovercard",
+    "monalisa",
+    "followee",
+    "octicon"
   ],
   "ignorePaths": ["node_modules/**", "dist/**"]
 }
