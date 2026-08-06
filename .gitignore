@@ -7,3 +7,4 @@ dist/
 .idea
 dist/*.mcpb
 dist/*.zip
+.husky/
