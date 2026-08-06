@@ -45,7 +45,7 @@ async function main(): Promise<void> {
   const config = loadConfig(process.env);
   const logger = createLogger(config.logLevel);
   const octokit = buildOctokitClient(config);
-  const server = buildServer(octokit, config.permission);
+  const server = buildServer(octokit, config.permission, logger);
 
   if (args.transport === 'stdio') {
     logger.info('Starting github-mcp-server-js over stdio');
