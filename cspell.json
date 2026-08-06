@@ -53,5 +53,6 @@
     "GHES",
     "Sigstore"
   ],
-  "ignorePaths": ["node_modules/**", "dist/**"]
+  "ignorePaths": ["node_modules/**", "dist/**"],
+  "ignoreRegExpList": ["%2[fF]\\w+"]
 }
