@@ -33,7 +33,17 @@
     "Nlcj",
     "ghsa",
     "cwes",
-    "unreviewed"
+    "unreviewed",
+    "GHEC",
+    "SARIF",
+    "Sarif",
+    "unconfigured",
+    "includable",
+    "Gistfile",
+    "callsite",
+    "scim",
+    "parameterless",
+    "Unsuspends"
   ],
   "ignorePaths": ["node_modules/**", "dist/**"]
 }
