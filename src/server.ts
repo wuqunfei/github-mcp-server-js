@@ -39,7 +39,7 @@ function wrapWithLogging(server: McpServer, logger: Logger): void {
     const wrapped = async (args: unknown, extra?: unknown): Promise<unknown> => {
       const start = Date.now();
       const argsText = truncate(JSON.stringify(args ?? {}), 200);
-      logger.info(`tool_call name=${toolName} args=${argsText}`);
+      logger.info('tool_call', { name: toolName, args: argsText });
       const result = (await handler(args, extra)) as {
         isError?: boolean;
         content?: Array<{ text?: string }>;
@@ -47,9 +47,9 @@ function wrapWithLogging(server: McpServer, logger: Logger): void {
       const ms = Date.now() - start;
       const preview = truncate(String(result?.content?.[0]?.text ?? ''), 200);
       if (result?.isError) {
-        logger.error(`tool_error name=${toolName} ms=${ms} message=${preview}`);
+        logger.error('tool_error', { name: toolName, ms, message: preview });
       } else {
-        logger.info(`tool_ok name=${toolName} ms=${ms} result=${preview}`);
+        logger.info('tool_ok', { name: toolName, ms, result: preview });
       }
       return result;
     };

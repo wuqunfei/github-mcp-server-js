@@ -9,6 +9,7 @@ function makeConfig(overrides: Partial<Config> = {}): Config {
     githubApiBaseUrl: 'https://api.github.com',
     permission: 'read-write',
     logLevel: 'info',
+    logFormat: 'text',
     ...overrides,
   };
 }

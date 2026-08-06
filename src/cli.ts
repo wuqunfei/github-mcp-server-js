@@ -43,15 +43,15 @@ export function parseArgs(argv: string[]): CliArgs {
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const config = loadConfig(process.env);
-  const logger = createLogger(config.logLevel);
+  const logger = createLogger(config.logLevel, config.logFormat);
   const octokit = buildOctokitClient(config);
   const server = buildServer(octokit, config.permission, logger);
 
   if (args.transport === 'stdio') {
-    logger.info('Starting github-mcp-server-js over stdio');
+    logger.info('server_start', { transport: 'stdio' });
     await runStdio(server);
   } else {
-    logger.info(`Starting github-mcp-server-js over HTTP on port ${args.port}`);
+    logger.info('server_start', { transport: 'http', port: args.port });
     const { runHttp } = await import('./transports/http.js');
     await runHttp(server, args.port);
   }

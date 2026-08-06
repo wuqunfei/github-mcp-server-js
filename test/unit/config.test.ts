@@ -68,4 +68,18 @@ describe('loadConfig', () => {
   it('rejects an invalid LOG_LEVEL value', () => {
     expect(() => loadConfig({ GITHUB_TOKEN: 't', LOG_LEVEL: 'verbose' })).toThrow(ConfigError);
   });
+
+  it('defaults logFormat to text', () => {
+    const config = loadConfig({ GITHUB_TOKEN: 't' });
+    expect(config.logFormat).toBe('text');
+  });
+
+  it('accepts LOG_FORMAT=json', () => {
+    const config = loadConfig({ GITHUB_TOKEN: 't', LOG_FORMAT: 'json' });
+    expect(config.logFormat).toBe('json');
+  });
+
+  it('rejects an invalid LOG_FORMAT value', () => {
+    expect(() => loadConfig({ GITHUB_TOKEN: 't', LOG_FORMAT: 'yaml' })).toThrow(ConfigError);
+  });
 });

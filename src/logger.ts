@@ -1,9 +1,11 @@
 import type { Config } from './config.js';
 
+export type LogFields = Record<string, unknown>;
+
 export interface Logger {
-  debug(message: string): void;
-  info(message: string): void;
-  error(message: string): void;
+  debug(event: string, fields?: LogFields): void;
+  info(event: string, fields?: LogFields): void;
+  error(event: string, fields?: LogFields): void;
 }
 
 const LEVEL_RANK: Record<Config['logLevel'], number> = {
@@ -12,18 +14,33 @@ const LEVEL_RANK: Record<Config['logLevel'], number> = {
   error: 2,
 };
 
-export function createLogger(logLevel: Config['logLevel']): Logger {
-  const threshold = LEVEL_RANK[logLevel];
+function renderText(level: Config['logLevel'], event: string, fields: LogFields): string {
+  const suffix = Object.entries(fields)
+    .map(([k, v]) => `${k}=${typeof v === 'string' ? v : JSON.stringify(v)}`)
+    .join(' ');
+  return suffix ? `[${level}] ${event} ${suffix}\n` : `[${level}] ${event}\n`;
+}
 
-  function write(level: Config['logLevel'], message: string): void {
+function renderJson(level: Config['logLevel'], event: string, fields: LogFields): string {
+  return `${JSON.stringify({ ts: new Date().toISOString(), level, event, ...fields })}\n`;
+}
+
+export function createLogger(
+  logLevel: Config['logLevel'],
+  logFormat: Config['logFormat'] = 'text',
+): Logger {
+  const threshold = LEVEL_RANK[logLevel];
+  const render = logFormat === 'json' ? renderJson : renderText;
+
+  function write(level: Config['logLevel'], event: string, fields?: LogFields): void {
     if (LEVEL_RANK[level] >= threshold) {
-      process.stderr.write(`[${level}] ${message}\n`);
+      process.stderr.write(render(level, event, fields ?? {}));
     }
   }
 
   return {
-    debug: (message) => write('debug', message),
-    info: (message) => write('info', message),
-    error: (message) => write('error', message),
+    debug: (event, fields) => write('debug', event, fields),
+    info: (event, fields) => write('info', event, fields),
+    error: (event, fields) => write('error', event, fields),
   };
 }

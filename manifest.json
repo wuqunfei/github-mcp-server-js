@@ -21,7 +21,8 @@
         "GITHUB_TOKEN": "${user_config.github_token}",
         "GITHUB_SERVER_URL": "${user_config.github_server_url}",
         "GITHUB_PERMISSION": "${user_config.github_permission}",
-        "LOG_LEVEL": "${user_config.log_level}"
+        "LOG_LEVEL": "${user_config.log_level}",
+        "LOG_FORMAT": "${user_config.log_format}"
       }
     }
   },
@@ -50,6 +51,12 @@
       "title": "Log Level (debug, info, or error)",
       "description": "Verbosity of server log output. One of: debug, info, error.",
       "default": "info"
+    },
+    "log_format": {
+      "type": "string",
+      "title": "Log Format (text or json)",
+      "description": "text = human-readable [level] event key=value lines (default). json = one JSON object per stderr line, for log-aggregation pipelines.",
+      "default": "text"
     }
   }
 }

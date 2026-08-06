@@ -3,6 +3,7 @@ export interface Config {
   githubApiBaseUrl: string;
   permission: 'read-only' | 'read-write';
   logLevel: 'debug' | 'info' | 'error';
+  logFormat: 'text' | 'json';
 }
 
 export class ConfigError extends Error {
@@ -14,6 +15,7 @@ export class ConfigError extends Error {
 
 const PERMISSIONS = ['read-only', 'read-write'] as const;
 const LOG_LEVELS = ['debug', 'info', 'error'] as const;
+const LOG_FORMATS = ['text', 'json'] as const;
 
 function normalizeServerUrl(rawValue: string | undefined): string {
   if (!rawValue) {
@@ -55,10 +57,18 @@ export function loadConfig(env: Record<string, string | undefined>): Config {
     throw new ConfigError(`LOG_LEVEL must be one of ${LOG_LEVELS.join(', ')}, got "${logLevel}"`);
   }
 
+  const logFormat = env.LOG_FORMAT ?? 'text';
+  if (!LOG_FORMATS.includes(logFormat as (typeof LOG_FORMATS)[number])) {
+    throw new ConfigError(
+      `LOG_FORMAT must be one of ${LOG_FORMATS.join(', ')}, got "${logFormat}"`,
+    );
+  }
+
   return {
     githubToken,
     githubApiBaseUrl: normalizeServerUrl(env.GITHUB_SERVER_URL),
     permission: permission as Config['permission'],
     logLevel: logLevel as Config['logLevel'],
+    logFormat: logFormat as Config['logFormat'],
   };
 }

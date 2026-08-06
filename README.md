@@ -71,7 +71,8 @@ Add this entry (create the file with `{ "mcpServers": {} }` if it doesn't exist)
         "GITHUB_TOKEN": "ghp_your_personal_access_token_here",
         "GITHUB_SERVER_URL": "github.com",
         "GITHUB_PERMISSION": "read-write",
-        "LOG_LEVEL": "info"
+        "LOG_LEVEL": "info",
+        "LOG_FORMAT": "text"
       }
     }
   }
@@ -83,6 +84,7 @@ Only `GITHUB_TOKEN` is required — the other three are shown with their default
 - **GitHub Enterprise Server:** `"GITHUB_SERVER_URL": "github.mycompany.com"` (bare hostname is fine; the server appends `/api/v3` automatically).
 - **Read-only mode:** `"GITHUB_PERMISSION": "read-only"` — the 28 mutating tools (`create_issue`, `merge_pull_request`, `star_repo`, `run_workflow`, …) are never registered.
 - **Verbose logs:** `"LOG_LEVEL": "debug"` prints every request/response summary to stderr; Claude Desktop surfaces stderr in its MCP log.
+- **Machine-readable logs:** `"LOG_FORMAT": "json"` emits one JSON object per line instead of the default `key=value` text — useful when piping to a log aggregator.
 
 Restart Claude Desktop. All 104 tools become available in every new chat.
 
@@ -138,6 +140,7 @@ Configuration is entirely via environment variables. Claude Desktop sets them fr
 | `GITHUB_SERVER_URL` | No | `github.com` | GitHub host — bare hostname or full API base URL. Set this for GitHub Enterprise Server. |
 | `GITHUB_PERMISSION` | No | `read-write` | `read-only` (registers 76 read tools) or `read-write` (all 104). |
 | `LOG_LEVEL` | No | `info` | `debug`, `info`, or `error`. Every tool call logs `tool_call` / `tool_ok` / `tool_error` to stderr at `info`. |
+| `LOG_FORMAT` | No | `text` | `text` (human-readable `[level] event key=value` lines) or `json` (one JSON object per stderr line — for log-aggregation pipelines). |
 
 ## 🧰 Toolsets
 
