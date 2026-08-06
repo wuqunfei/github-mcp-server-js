@@ -333,8 +333,6 @@ for public repositories).
 | `rerun_workflow_run_failed_jobs` | W | Re-run only the failed jobs in a workflow run. |
 | `approve_workflow_run` | W | Approve a workflow run awaiting fork-PR approval. |
 
-See `docs/superpowers/specs/2026-08-05-github-mcp-server-design.md` for the full
-architecture.
 
 ## 🧪 Testing
 
