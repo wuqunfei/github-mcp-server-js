@@ -43,15 +43,16 @@ jobs:
       - run: npm ci
       - name: Build dist/cli.js
         run: npm run build
-      - name: Publish to npm
+      - name: Publish to npm (via Trusted Publisher / OIDC)
+        # No NODE_AUTH_TOKEN — npm exchanges GitHub's OIDC token for a
+        # short-lived publish token via the trusted-publisher config on
+        # npmjs.com. See /package/github-mcp-server-js/access.
         run: |
           if [[ "${GITHUB_REF_NAME}" == *-* ]]; then
             npm publish --tag next --provenance --access public
           else
             npm publish --provenance --access public
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Pack .mcpb bundle
         run: npm run pack:mcpb
       - name: Upload .mcpb to the tag's GitHub Release
