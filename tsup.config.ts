@@ -3,7 +3,7 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
   entry: ['src/cli.ts'],
   format: ['esm'],
-  target: 'node20',
+  target: 'node24',
   bundle: true,
   clean: true,
   // Inline every dependency so dist/cli.js is truly self-contained. Required

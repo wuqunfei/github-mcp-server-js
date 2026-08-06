@@ -10,7 +10,7 @@
     "dist"
   ],
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
   "scripts": {
     "build": "tsup",
@@ -42,7 +42,7 @@
     "lint-staged": "^17.3.0",
     "nock": "^14.0.17",
     "tsup": "^8.5.1",
-    "tsx": "^4.19.0",
+    "tsx": "^4.23.9",
     "typescript": "^5.7.0",
     "typescript-eslint": "^8.66.0",
     "vitest": "^4.1.10"
@@ -52,5 +52,8 @@
       "eslint --fix",
       "cspell"
     ]
+  },
+  "overrides": {
+    "tmp": "^0.2.7"
   }
 }
