@@ -4,7 +4,7 @@
 <h2 align="center">Github-MCP-Server-JS</h2>
 
 <p align="center">
-  <strong>🚀 A pure Node.js GitHub MCP server for Claude Desktop and any MCP-compatible client — ⚡ 106 REST tools across 16 toolsets, 🚫 no Docker, 🚫 no Go, 🚫 no python. ✨</strong>
+  <strong>🚀 A pure Node.js GitHub MCP server for Claude Desktop and any MCP-compatible client — ⚡ 100+ REST tools across 16 toolsets, 🚫 no Docker, 🚫 no Go, 🚫 no python. ✨</strong>
 </p>
 
 <p align="center">
@@ -21,7 +21,7 @@ Built exclusively on the two **first-party SDKs from the official providers** �
 
 ## ✨ Highlights
 
-- 🧰 **Complete surface** — 106 tools across 16 toolsets (issues, pull requests, actions, code security, Copilot admin, ProjectsV2, and more).
+- 🧰 **Complete surface** — 100+ tools across 16 toolsets (issues, pull requests, actions, code security, Copilot admin, ProjectsV2, and more).
 - 🔒 **Secure by default** — flip `GITHUB_PERMISSION=read-only` and every mutating tool is never even registered.
 - 📦 **Three install channels** — npm (`npx`), Claude Desktop Extension (`.mcpb`), or unpacked extension (`.zip`).
 - ✅ **Signed releases** — every version built by GitHub Actions with npm provenance and Sigstore attestation.
@@ -40,7 +40,7 @@ Five gaps in the current GitHub-MCP landscape:
 
 - 🐳 **The newer official server needs Docker + Go.** [github/github-mcp-server](https://github.com/github/github-mcp-server) ships as a Docker-run Go binary — often blocked by enterprise policy.
 
-- 🧰 **Broader tool coverage.** 106 tools across 16 toolsets — a superset of the archived `server-github` and typical `gh`-CLI wrappers. See [Toolsets](#toolsets) for the full list.
+- 🧰 **Broader tool coverage.** 100+ tools across 16 toolsets — a superset of the archived `server-github` and typical `gh`-CLI wrappers. See [Toolsets](#toolsets) for the full list.
 
 - 🔒 **Read-only mode is one env var.** `GITHUB_PERMISSION=read-only` registers only the 76 read tools; the 30 mutating operations (`create_issue`, `merge_pull_request`, `star_repo`, `run_workflow`, …) are never exposed to the model. Same binary, one variable, verified by tests.
 
@@ -84,7 +84,7 @@ Only `GITHUB_TOKEN` is required — the other three are shown with their default
 - **Read-only mode:** `"GITHUB_PERMISSION": "read-only"` — the 30 mutating tools (`create_issue`, `merge_pull_request`, `star_repo`, `run_workflow`, …) are never registered.
 - **Verbose logs:** `"LOG_LEVEL": "debug"` prints every request/response summary to stderr; Claude Desktop surfaces stderr in its MCP log. Every line is already JSON — no separate format flag needed.
 
-Restart Claude Desktop. All 106 tools become available in every new chat.
+Restart Claude Desktop. All 100+ tools become available in every new chat.
 
 The server can also run standalone from any terminal:
 
@@ -101,7 +101,7 @@ No config-file editing required; the token is stored in the OS keychain.
 2. Open **Claude Desktop → Settings → Extensions**.
 3. **Drag the `.mcpb` file** into the Extensions pane.
 4. Fill in your `GITHUB_TOKEN` (masked; stored in the macOS / Windows keychain, never in plaintext). The remaining fields carry sensible defaults.
-5. Click **Install**. All 106 tools are immediately available.
+5. Click **Install**. All 100+ tools are immediately available.
 
 ### 🛠️ Path 3 — Claude Desktop unpacked extension (`.zip`, developer mode)
 
@@ -136,12 +136,12 @@ Configuration is entirely via environment variables. Claude Desktop sets them fr
 |---|---|---|---|
 | `GITHUB_TOKEN` | Yes | — | Personal access token used for all GitHub API calls. |
 | `GITHUB_SERVER_URL` | No | `github.com` | GitHub host — bare hostname or full API base URL. Set this for GitHub Enterprise Server. |
-| `GITHUB_PERMISSION` | No | `read-write` | `read-only` (registers 76 read tools) or `read-write` (all 106). |
+| `GITHUB_PERMISSION` | No | `read-write` | `read-only` (registers 76 read tools) or `read-write` (all 100+). |
 | `LOG_LEVEL` | No | `info` | `debug`, `info`, or `error`. Every tool call logs `tool_call` / `tool_ok` / `tool_error` as one JSON object per stderr line, plus an MCP `notifications/message` for the connected client. |
 
 ## 🧰 Toolsets
 
-All 16 toolsets are shipped, exposing **106 tools** total. Write tools are only registered when `GITHUB_PERMISSION=read-write` (the default); `read-only` mode registers the read tools alone. The **Access** column indicates: **R** = registered in read-only mode; **W** = registered only in read-write mode.
+All 16 toolsets are shipped, exposing **100+ tools** total. Write tools are only registered when `GITHUB_PERMISSION=read-write` (the default); `read-only` mode registers the read tools alone. The **Access** column indicates: **R** = registered in read-only mode; **W** = registered only in read-write mode.
 
 ### 📁 `repos` — repositories, branches, commits, tags, file contents
 
