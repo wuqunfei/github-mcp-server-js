@@ -13,7 +13,7 @@
 - All existing verification gates keep passing: `npm test` (207/207 unit), `npm run typecheck`, `npm run lint`, `npm run spellcheck`, `npm run build`.
 - The `.mcpb` bundle must contain EXACTLY three entries: `manifest.json`, `dist/cli.js`, `assets/icon.png`. Anything else is a bug; the pack script asserts this.
 - `manifest.json.version` MUST equal `package.json.version` at pack time; drift is a hard error.
-- `manifest.json` uses `mcpb_version: "0.1"`, `server.type: "node"`, `server.entry_point: "dist/cli.js"`, and the exact `mcp_config` + `user_config` blocks shown in the spec (`docs/superpowers/specs/2026-08-06-github-mcp-server-mcpb-extension-design.md` lines 44-99).
+- `manifest.json` uses `manifest_version: "0.1"`, `server.type: "node"`, `server.entry_point: "dist/cli.js"`, and the exact `mcp_config` + `user_config` blocks shown in the spec (`docs/superpowers/specs/2026-08-06-github-mcp-server-mcpb-extension-design.md` lines 44-99).
 - `GITHUB_TOKEN` is the only `sensitive: true` user_config field (stored in OS keychain).
 - The extension is stdio only. Do NOT wire `--transport=http` or any HTTP flag into `mcp_config.args`.
 - Phase 2 depends on Phase 1 verification passing (manual Claude Desktop install works end-to-end). Do NOT start Phase 2 until Task 3 is signed off.
@@ -56,7 +56,7 @@ README.md                                  (modified, Task 3 — install instruc
 
 ```json
 {
-  "mcpb_version": "0.1",
+  "manifest_version": "0.1",
   "name": "github-mcp-server-js",
   "display_name": "GitHub MCP Server (JS)",
   "version": "0.1.0",
@@ -105,6 +105,7 @@ README.md                                  (modified, Task 3 — install instruc
     "log_level": {
       "type": "string",
       "title": "Log Level (debug, info, or error)",
+      "description": "Verbosity of server log output. One of: debug, info, error.",
       "default": "info"
     }
   }

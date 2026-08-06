@@ -43,7 +43,7 @@ No `node_modules`, no `src/`, no `test/`.
 
 ```json
 {
-  "mcpb_version": "0.1",
+  "manifest_version": "0.1",
   "name": "github-mcp-server-js",
   "display_name": "GitHub MCP Server (JS)",
   "version": "0.1.0",
@@ -92,6 +92,7 @@ No `node_modules`, no `src/`, no `test/`.
     "log_level": {
       "type": "string",
       "title": "Log Level (debug, info, or error)",
+      "description": "Verbosity of server log output. One of: debug, info, error.",
       "default": "info"
     }
   }
@@ -103,6 +104,11 @@ and `directory` field types — no native enum. `github_permission` and
 `log_level` are therefore free-text strings with defaults; the valid values
 are described in the field title/description. The server already validates
 these env vars at startup, so invalid input fails loudly.
+
+**Note on schema field names (verified against mcpb v2.1.2):** the manifest
+uses `manifest_version` (not `mcpb_version`) as the schema version key. Every
+`user_config` field requires `description`; omit at your peril — the
+validator rejects missing `description` even when a `title` is present.
 
 ## Phase 1 — Local pack + real-install verification
 
