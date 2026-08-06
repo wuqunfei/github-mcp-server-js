@@ -43,7 +43,13 @@
     "callsite",
     "scim",
     "parameterless",
-    "Unsuspends"
+    "Unsuspends",
+    "mcpbignore",
+    "simpleicons",
+    "softprops",
+    "librsvg",
+    "rsvg",
+    "Qunfei"
   ],
   "ignorePaths": ["node_modules/**", "dist/**"]
 }

@@ -1,5 +1,5 @@
 {
-  "mcpb_version": "0.1",
+  "manifest_version": "0.1",
   "name": "github-mcp-server-js",
   "display_name": "GitHub MCP Server (JS)",
   "version": "0.1.0",
@@ -48,6 +48,7 @@
     "log_level": {
       "type": "string",
       "title": "Log Level (debug, info, or error)",
+      "description": "Verbosity of server log output. One of: debug, info, error.",
       "default": "info"
     }
   }

@@ -23,6 +23,7 @@
     "test:integration": "vitest run --config vitest.integration.config.ts",
     "pretest:integration:write": "npm run build",
     "test:integration:write": "INTEGRATION_WRITE=1 vitest run --config vitest.integration.config.ts",
+    "pack:mcpb": "node scripts/pack-mcpb.mjs",
     "prepare": "husky"
   },
   "dependencies": {
@@ -32,6 +33,7 @@
     "zod": "^4.2.0"
   },
   "devDependencies": {
+    "@anthropic-ai/mcpb": "^2.1.2",
     "@modelcontextprotocol/client": "^2.0.0",
     "@types/node": "^24.0.0",
     "cspell": "^10.0.1",

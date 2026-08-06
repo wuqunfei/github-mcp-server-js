@@ -19,6 +19,7 @@ cspell.json
 .gitleaks.toml
 .gitignore
 .mcpbignore
+.idea/
 package.json
 package-lock.json
 README.md
