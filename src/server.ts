@@ -25,6 +25,27 @@ function truncate(s: string, max: number): string {
   return s.length > max ? `${s.slice(0, max)}…(+${s.length - max} more)` : s;
 }
 
+// Emit an MCP protocol log notification via ctx.mcpReq.log so that MCP
+// clients (Claude Desktop, etc.) receive the structured `data` field as
+// the "metadata" shown alongside each log line — instead of the raw
+// stderr text which the client can only show with { metadata: undefined }.
+// Silently no-op if the ctx doesn't expose the log() method, so unit tests
+// and non-MCP invocations still work.
+async function mcpLog(
+  ctx: unknown,
+  level: 'debug' | 'info' | 'error',
+  data: Record<string, unknown>,
+): Promise<void> {
+  const log = (ctx as { mcpReq?: { log?: (l: string, d: unknown, logger?: string) => Promise<void> } })
+    ?.mcpReq?.log;
+  if (typeof log !== 'function') return;
+  try {
+    await log(level, data, SERVER_NAME);
+  } catch {
+    // MCP log failures must not break the tool call.
+  }
+}
+
 function wrapWithLogging(server: McpServer, logger: Logger): void {
   const original = server.registerTool.bind(server) as (
     ...args: unknown[]
@@ -39,7 +60,10 @@ function wrapWithLogging(server: McpServer, logger: Logger): void {
     const wrapped = async (args: unknown, extra?: unknown): Promise<unknown> => {
       const start = Date.now();
       const argsText = truncate(JSON.stringify(args ?? {}), 200);
-      logger.info('tool_call', { name: toolName, args: argsText });
+      const callFields = { name: toolName, args: argsText };
+      logger.info('tool_call', callFields);
+      await mcpLog(extra, 'info', { event: 'tool_call', ...callFields });
+
       const result = (await handler(args, extra)) as {
         isError?: boolean;
         content?: Array<{ text?: string }>;
@@ -47,9 +71,13 @@ function wrapWithLogging(server: McpServer, logger: Logger): void {
       const ms = Date.now() - start;
       const preview = truncate(String(result?.content?.[0]?.text ?? ''), 200);
       if (result?.isError) {
-        logger.error('tool_error', { name: toolName, ms, message: preview });
+        const errFields = { name: toolName, ms, message: preview };
+        logger.error('tool_error', errFields);
+        await mcpLog(extra, 'error', { event: 'tool_error', ...errFields });
       } else {
-        logger.info('tool_ok', { name: toolName, ms, result: preview });
+        const okFields = { name: toolName, ms, result: preview };
+        logger.info('tool_ok', okFields);
+        await mcpLog(extra, 'info', { event: 'tool_ok', ...okFields });
       }
       return result;
     };
@@ -62,7 +90,12 @@ export function buildServer(
   permission: 'read-only' | 'read-write',
   logger?: Logger,
 ): McpServer {
-  const server = new McpServer({ name: SERVER_NAME, version: SERVER_VERSION });
+  // Declare the `logging` capability so MCP clients (Claude Desktop) accept
+  // `notifications/message` sent from ctx.mcpReq.log inside the wrap below.
+  const server = new McpServer(
+    { name: SERVER_NAME, version: SERVER_VERSION },
+    { capabilities: { logging: {} } },
+  );
 
   if (logger) {
     wrapWithLogging(server, logger);
