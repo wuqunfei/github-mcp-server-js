@@ -1,55 +1,116 @@
 # github-mcp-server-js
 
-A GitHub MCP server built on [octokit.js](https://github.com/octokit/octokit.js) and the
-[MCP TypeScript SDK v2](https://github.com/modelcontextprotocol/typescript-sdk).
+**A pure-Node GitHub MCP server for Claude Desktop and any MCP-compatible client — 104 REST tools across 16 toolsets, no Docker, no Go, one `npx` command.**
 
-## Usage
+[![npm version](https://img.shields.io/npm/v/github-mcp-server-js.svg)](https://www.npmjs.com/package/github-mcp-server-js)
+[![node](https://img.shields.io/node/v/github-mcp-server-js.svg)](https://nodejs.org/)
+[![license](https://img.shields.io/npm/l/github-mcp-server-js.svg)](./LICENSE)
+[![CI](https://github.com/wuqunfei/github-mcp-server-js/actions/workflows/ci.yml/badge.svg)](https://github.com/wuqunfei/github-mcp-server-js/actions/workflows/ci.yml)
 
-```bash
-npx github-mcp-server-js
+Built on two **first-party SDKs from the official providers**:
+
+- **[octokit.js](https://github.com/octokit/octokit.js)** — the REST/GraphQL client GitHub itself publishes and maintains. Every tool in this server is a thin wrapper around a verified `octokit.rest.*` method.
+- **[MCP TypeScript SDK v2](https://github.com/modelcontextprotocol/typescript-sdk)** — Anthropic's official Model Context Protocol server SDK.
+
+No custom HTTP client, no hand-rolled protocol layer.
+
+---
+
+## Why this project exists
+
+Three practical gaps in the current GitHub-MCP landscape:
+
+1. **Private / enterprise GitHub deployments rarely expose remote MCP.** GitHub Enterprise Server (GHES) and many managed enterprise setups don't yet ship a remote MCP endpoint. Users who need to reach a private repo from Claude fall back to running a local server themselves.
+
+2. **The original Anthropic reference server is deprecated.** [`@modelcontextprotocol/server-github`](https://www.npmjs.com/package/@modelcontextprotocol/server-github) has been archived at [modelcontextprotocol/servers-archived](https://github.com/modelcontextprotocol/servers-archived/tree/main/src/github). It no longer receives fixes or new tools.
+
+3. **GitHub's newer official [github-mcp-server](https://github.com/github/github-mcp-server) requires Docker + Go.** Many enterprise environments forbid installing Docker Desktop or a Go toolchain on developer machines for policy or licensing reasons. That leaves those users with no supported local GitHub MCP option.
+
+**`github-mcp-server-js` fills the gap: pure Node 24+ / TypeScript, single-file bundle, `npx`-installable, ships as both an npm package and a Claude Desktop Extension.**
+
+---
+
+## Quick start
+
+Pick one of three install paths, from easiest to most hands-on.
+
+### Path 1 — `npx` from Claude Desktop config *(recommended for CLI users)*
+
+Edit your Claude Desktop config file:
+
+- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+Add this entry (create the file with `{ "mcpServers": {} }` if it doesn't exist):
+
+```json
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "github-mcp-server-js"],
+      "env": {
+        "GITHUB_TOKEN": "ghp_your_personal_access_token_here"
+      }
+    }
+  }
+}
 ```
 
-Runs over stdio by default. For a standalone HTTP server:
+Restart Claude Desktop. That's it — all 104 tools are available in every chat.
+
+You can run it standalone from any terminal too:
 
 ```bash
-npx github-mcp-server-js --transport=http --port=3000
+npx github-mcp-server-js                       # stdio (for MCP clients)
+npx github-mcp-server-js --transport=http --port=3000  # standalone HTTP
 ```
 
-## Configuration
+### Path 2 — Claude Desktop Extension via drag-drop (`.mcpb`)
 
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `GITHUB_TOKEN` | Yes | — | Personal access token used for all GitHub API calls |
-| `GITHUB_SERVER_URL` | No | `github.com` | GitHub host — bare hostname or full API base URL. Set this for GitHub Enterprise Server |
-| `GITHUB_PERMISSION` | No | `read-write` | `read-only` or `read-write` |
-| `LOG_LEVEL` | No | `info` | `debug`, `info`, or `error` |
+Zero config-file editing; token is stored in the OS keychain.
 
-## Install as a Claude Desktop Extension
-
-Prefer a one-drag install over editing config files? The server also ships
-as a `.mcpb` (Claude Desktop Extension) bundle.
-
-1. Download `github-mcp-server-js-<version>.mcpb` from the latest
-   [GitHub Release](https://github.com/wuqunfei/github-mcp-server-js/releases).
+1. Download `github-mcp-server-js-<version>.mcpb` from the latest [GitHub Release](https://github.com/wuqunfei/github-mcp-server-js/releases).
 2. Open Claude Desktop → **Settings** → **Extensions**.
-3. Drag the `.mcpb` file into the Extensions pane.
-4. Fill in your `GITHUB_TOKEN` (stored in the macOS/Windows keychain — never
-   in plaintext). The other three fields have sensible defaults.
-5. Click **Install**. All 104 tools are now available in every new chat.
+3. **Drag the `.mcpb` file** into the Extensions pane.
+4. Fill in your `GITHUB_TOKEN` in the form (masked; stored in the macOS/Windows keychain, never in plaintext). Other fields have sensible defaults.
+5. Click **Install**. All 104 tools are now available.
 
-Each release also ships a `github-mcp-server-js-<version>.zip` — the exact
-same archive as the `.mcpb`, just renamed so you can inspect or extract it
-with a stock `unzip` toolchain without needing to know the `.mcpb`
-convention.
+### Path 3 — Claude Desktop unpacked extension (`.zip`, developer mode)
 
-To build the bundle locally instead:
+Claude Desktop's Extensions pane also supports loading an **unpacked** extension from a directory — useful when you want to poke at the manifest, hot-swap `dist/cli.js`, or work behind a corporate proxy that blocks `.mcpb` downloads.
+
+1. Download `github-mcp-server-js-<version>.zip` from the latest [GitHub Release](https://github.com/wuqunfei/github-mcp-server-js/releases). This archive is byte-identical to the `.mcpb`; the extension is just renamed for stock `unzip` tooling.
+2. Extract it: `unzip github-mcp-server-js-<version>.zip -d github-mcp-server-js`.
+3. In Claude Desktop → **Settings** → **Extensions**, enable **developer mode** (if not already on).
+4. Click **Install unpacked extension** and select the extracted directory.
+5. Fill in `GITHUB_TOKEN` as with Path 2.
+
+Editing `manifest.json` or replacing `dist/cli.js` in the extracted directory takes effect on the next Claude Desktop reload — handy for local iteration on a fork.
+
+### Build the bundles yourself
 
 ```bash
+git clone https://github.com/wuqunfei/github-mcp-server-js
+cd github-mcp-server-js
 npm ci
 npm run pack:mcpb
 # → dist/github-mcp-server-js-<version>.mcpb
 # → dist/github-mcp-server-js-<version>.zip  (byte-identical copy)
 ```
+
+---
+
+## Configuration
+
+All configuration is via environment variables. All four are set automatically by Claude Desktop when you install via `.mcpb`; for `npx` installs you set them yourself.
+
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `GITHUB_TOKEN` | Yes | — | Personal access token used for all GitHub API calls. |
+| `GITHUB_SERVER_URL` | No | `github.com` | GitHub host — bare hostname or full API base URL. Set this for GitHub Enterprise Server. |
+| `GITHUB_PERMISSION` | No | `read-write` | `read-only` (registers 76 read tools) or `read-write` (all 104). |
+| `LOG_LEVEL` | No | `info` | `debug`, `info`, or `error`. Every tool call logs `tool_call` / `tool_ok` / `tool_error` to stderr at `info`. |
 
 ## Toolsets
 
@@ -274,3 +335,23 @@ GITHUB_TOKEN=ghp_... npm run test:integration:write
 
 The scripts run `npm run build` first so the tests exercise the built
 `dist/cli.js` over stdio, matching real client usage.
+
+## Releases and provenance
+
+Every published version is built by GitHub Actions from a tagged commit,
+[signed with npm's Trusted Publisher / Sigstore attestation](https://docs.npmjs.com/generating-provenance-statements),
+and shipped as three artifacts:
+
+- **npm package**: `npm i github-mcp-server-js` (uses the built-in `dist/cli.js`).
+- **`.mcpb` Claude Desktop Extension**: drag-drop install (Path 2 above).
+- **`.zip` alternate archive**: byte-identical to the `.mcpb`, for the unpacked-extension flow (Path 3 above) or stock `unzip` inspection.
+
+## Credits
+
+- **[octokit.js](https://github.com/octokit/octokit.js)** by GitHub — the REST/GraphQL client every tool wraps. Apache-2.0.
+- **[MCP TypeScript SDK v2](https://github.com/modelcontextprotocol/typescript-sdk)** by Anthropic — the MCP server framework. MIT.
+- **Prior art:** [`@modelcontextprotocol/server-github`](https://github.com/modelcontextprotocol/servers-archived/tree/main/src/github) (archived, original Anthropic reference server) and [`github/github-mcp-server`](https://github.com/github/github-mcp-server) (GitHub's official Go/Docker implementation) — both worth using when their constraints fit your environment.
+
+## License
+
+MIT © 2026 Qunfei Wu — see [LICENSE](./LICENSE).

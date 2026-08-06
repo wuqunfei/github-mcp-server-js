@@ -49,7 +49,9 @@
     "softprops",
     "librsvg",
     "rsvg",
-    "Qunfei"
+    "Qunfei",
+    "GHES",
+    "Sigstore"
   ],
   "ignorePaths": ["node_modules/**", "dist/**"]
 }
