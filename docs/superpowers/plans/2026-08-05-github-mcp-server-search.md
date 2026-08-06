@@ -80,7 +80,7 @@ Response bodies (raw passthrough, all `200 OK`):
 
 This task is intentionally larger than most Task 1s because the 5 tools are near-identical shell around 5 near-identical GitHub endpoints — splitting them across multiple tasks would produce a series of near-copies with no meaningful review gate between them. The right review gate for this toolset is "are all 5 tools registered correctly and the tests exercising them green?", which is one gate, not five.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `test/unit/toolsets/search.test.ts`:
 
@@ -291,12 +291,12 @@ describe('registerSearchTools', () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npm test -- search`
 Expected: FAIL with a module-not-found error for `../../../src/toolsets/search.js` (the file doesn't exist yet).
 
-- [ ] **Step 3: Create `src/toolsets/search.ts`**
+- [x] **Step 3: Create `src/toolsets/search.ts`**
 
 ```typescript
 import type { McpServer } from '@modelcontextprotocol/server';
@@ -454,17 +454,17 @@ export function registerSearchTools(
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npm test -- search`
 Expected: PASS (8 tests in `search.test.ts`).
 
-- [ ] **Step 5: Run the full test suite to confirm no regression in other toolsets**
+- [x] **Step 5: Run the full test suite to confirm no regression in other toolsets**
 
 Run: `npm test`
 Expected: PASS. Total test count is the previous suite total (66 tests as of commit `bdeab8c`) plus the 8 new tests in `search.test.ts` = 74 tests. No pre-existing test file is modified; `common.ts` is unchanged so `common.test.ts` still passes verbatim.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/toolsets/search.ts test/unit/toolsets/search.test.ts
@@ -483,7 +483,7 @@ git commit -m "feat: add search toolset (5 read-only tools)"
 - Consumes: `registerSearchTools(server, octokit, permission)` from Task 1.
 - Produces: nothing new — this is the final integration point.
 
-- [ ] **Step 1: Modify `src/server.ts`**
+- [x] **Step 1: Modify `src/server.ts`**
 
 Current content:
 
@@ -539,17 +539,17 @@ export function buildServer(
 }
 ```
 
-- [ ] **Step 2: Run the full test suite**
+- [x] **Step 2: Run the full test suite**
 
 Run: `npm test`
 Expected: PASS, same 74 tests as after Task 1 (no test exercises `server.ts` directly, following the same precedent as the prior three toolset plans — `buildServer` is a thin, non-branching composition function verified by the manual smoke test below plus the pre-existing CLI smoke test from the core plan).
 
-- [ ] **Step 3: Typecheck, lint, build**
+- [x] **Step 3: Typecheck, lint, build**
 
 Run: `npm run typecheck && npm run lint && npm run build`
 Expected: all PASS. The build step confirms `dist/cli.js`'s bundled dependency graph now transitively includes `search.ts`.
 
-- [ ] **Step 4: Manual end-to-end smoke test**
+- [x] **Step 4: Manual end-to-end smoke test**
 
 Run:
 ```bash
@@ -570,7 +570,7 @@ kill %1
 
 Expected: the `initialize` response contains `"serverInfo":{"name":"github-mcp-server-js"...}`. The `tools/list` response includes `search_repos`, `search_code`, `search_commits`, `search_issues`, and `search_users` — plus all previously-shipped tools from `repos`, `issues`, and `pull_requests` — proving all four toolsets are live in the same server with no duplicate-registration crash.
 
-- [ ] **Step 5: Update the README's Toolsets section**
+- [x] **Step 5: Update the README's Toolsets section**
 
 Modify `README.md`'s "Currently implemented" list (the same section the `pull_requests` plan updated) to add:
 
@@ -580,7 +580,7 @@ Modify `README.md`'s "Currently implemented" list (the same section the `pull_re
 
 Slot it after the existing `pull_requests` bullet, keeping the toolsets listed in the order they were shipped.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/server.ts README.md
