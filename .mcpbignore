@@ -1,0 +1,27 @@
+# Anything not in the three explicit bundle members below.
+src/
+test/
+docs/
+scripts/
+node_modules/
+coverage/
+.github/
+.claude/
+.git/
+.husky/
+.superpowers/
+tsconfig.json
+tsup.config.ts
+vitest.config.ts
+vitest.integration.config.ts
+eslint.config.js
+cspell.json
+.gitleaks.toml
+.gitignore
+.mcpbignore
+package.json
+package-lock.json
+README.md
+CHANGELOG.md
+LICENSE*
+*.md
