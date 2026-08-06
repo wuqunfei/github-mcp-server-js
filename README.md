@@ -24,6 +24,27 @@ npx github-mcp-server-js --transport=http --port=3000
 | `GITHUB_PERMISSION` | No | `read-write` | `read-only` or `read-write` |
 | `LOG_LEVEL` | No | `info` | `debug`, `info`, or `error` |
 
+## Install as a Claude Desktop Extension
+
+Prefer a one-drag install over editing config files? The server also ships
+as a `.mcpb` (Claude Desktop Extension) bundle.
+
+1. Download `github-mcp-server-js-<version>.mcpb` from the latest
+   [GitHub Release](https://github.com/wuqunfei/github-mcp-server-js/releases).
+2. Open Claude Desktop → **Settings** → **Extensions**.
+3. Drag the `.mcpb` file into the Extensions pane.
+4. Fill in your `GITHUB_TOKEN` (stored in the macOS/Windows keychain — never
+   in plaintext). The other three fields have sensible defaults.
+5. Click **Install**. All 104 tools are now available in every new chat.
+
+To build the bundle locally instead:
+
+```bash
+npm ci
+npm run pack:mcpb
+# → dist/github-mcp-server-js-<version>.mcpb
+```
+
 ## Toolsets
 
 All 16 toolsets from the design are shipped, exposing **104 tools** total. Write
