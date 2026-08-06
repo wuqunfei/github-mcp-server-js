@@ -27,8 +27,10 @@ jobs:
   release:
     runs-on: ubuntu-latest
     needs: gate
+    environment: dev
     permissions:
       contents: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,7 +39,19 @@ jobs:
         with:
           node-version: '24'
           cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
       - run: npm ci
+      - name: Build dist/cli.js
+        run: npm run build
+      - name: Publish to npm
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == *-* ]]; then
+            npm publish --tag next --provenance --access public
+          else
+            npm publish --provenance --access public
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Pack .mcpb bundle
         run: npm run pack:mcpb
       - name: Upload .mcpb to the tag's GitHub Release
@@ -46,5 +60,6 @@ jobs:
           files: dist/github-mcp-server-js-*.mcpb
           fail_on_unmatched_files: true
           generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
