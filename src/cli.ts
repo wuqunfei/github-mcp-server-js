@@ -1,11 +1,15 @@
 // src/cli.ts
-import { pathToFileURL } from 'node:url';
+import { realpathSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { buildOctokitClient } from './octokit-client.js';
 import { buildServer } from './server.js';
 import { loadConfig } from './config.js';
 import { createLogger } from './logger.js';
-import { runHttp } from './transports/http.js';
 import { runStdio } from './transports/stdio.js';
+// NOTE: runHttp is dynamically imported inside main() so the HTTP transport's
+// dep chain (@whatwg-node/server → @whatwg-node/node-fetch, which does
+// `require('buffer')` at CJS module top-level) does NOT load in the stdio path.
+// That keeps the .mcpb Claude Desktop Extension bundle working under pure ESM.
 
 export interface CliArgs {
   transport: 'stdio' | 'http';
@@ -48,11 +52,24 @@ async function main(): Promise<void> {
     await runStdio(server);
   } else {
     logger.info(`Starting github-mcp-server-js over HTTP on port ${args.port}`);
+    const { runHttp } = await import('./transports/http.js');
     await runHttp(server, args.port);
   }
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+function isDirectEntry(): boolean {
+  const arg1 = process.argv[1];
+  if (!arg1) return false;
+  // Compare via realpath on both sides so macOS temp paths (/var/folders/…
+  // → /private/var/folders/…) and other symlinks don't cause a silent no-op.
+  try {
+    return realpathSync(arg1) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
+if (isDirectEntry()) {
   main().catch((error: unknown) => {
     process.stderr.write(`Fatal error: ${error instanceof Error ? error.message : String(error)}\n`);
     process.exitCode = 1;
