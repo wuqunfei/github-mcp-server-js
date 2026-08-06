@@ -42,6 +42,7 @@ Currently implemented:
 - `orgs_teams` — organization inspection, team listing/lookup, and team-membership management
 - `codespaces` — list, inspect, create, start, and stop codespaces for the authenticated user
 - `projects` — list and inspect GitHub ProjectsV2 org projects, items, and fields
+- `code_security` — code scanning, secret scanning, Dependabot alerts, and security advisories
 
 Additional toolsets (actions, and more) are tracked in
 `docs/superpowers/specs/2026-08-05-github-mcp-server-design.md`.
