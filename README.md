@@ -18,7 +18,7 @@ No custom HTTP client, no hand-rolled protocol layer.
 
 ## Why this project exists
 
-Four practical gaps in the current GitHub-MCP landscape:
+Five practical gaps in the current GitHub-MCP landscape:
 
 - **No remote MCP on private / enterprise GitHub.**
   GitHub Enterprise Server (GHES) and most managed enterprise deployments don't yet expose a remote MCP endpoint. Reaching a private repo from Claude means running a local server yourself.
@@ -32,7 +32,10 @@ Four practical gaps in the current GitHub-MCP landscape:
 - **Broader tool coverage than the alternatives.**
   104 tools across 16 toolsets (issues, pull requests, actions, code security, Copilot admin, ProjectsV2, and more) — a superset of what the archived `@modelcontextprotocol/server-github` shipped and what typical `gh`-CLI wrappers surface. See the [Toolsets](#toolsets) tables below for the full list.
 
-**`github-mcp-server-js` fills all four: pure Node 24+ / TypeScript, single-file bundle, `npx`-installable, ships as both an npm package and a Claude Desktop Extension.**
+- **Security by default — read-only mode is one env var away.**
+  Set `GITHUB_PERMISSION=read-only` and the server registers only the 76 read tools; every mutating operation (`create_issue`, `merge_pull_request`, `create_or_update_file`, `star_repo`, `run_workflow`, …) is never even exposed to the model. Flip to `read-write` (default) for the full 104-tool CRUD surface when you actually need it. Same binary, one variable, verified by the test suite.
+
+**`github-mcp-server-js` fills all five: pure Node 24+ / TypeScript, single-file bundle, `npx`-installable, ships as both an npm package and a Claude Desktop Extension.**
 
 ---
 
