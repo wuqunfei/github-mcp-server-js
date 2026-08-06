@@ -3,7 +3,7 @@
   "name": "github-mcp-server-js",
   "display_name": "GitHub MCP Server (JS)",
   "version": "0.1.5",
-  "description": "MCP server exposing 104 GitHub REST tools across 16 toolsets, built on octokit.js.",
+  "description": "MCP server exposing 105 GitHub REST tools across 16 toolsets, built on octokit.js.",
   "author": { "name": "Qunfei Wu" },
   "homepage": "https://github.com/wuqunfei/github-mcp-server-js",
   "repository": {
@@ -42,7 +42,7 @@
     "github_permission": {
       "type": "string",
       "title": "Permission (read-only or read-write)",
-      "description": "read-only registers only read tools; read-write registers all 104 tools.",
+      "description": "read-only registers only read tools; read-write registers all 105 tools.",
       "default": "read-write"
     },
     "log_level": {

@@ -42,7 +42,7 @@ Five gaps in the current GitHub-MCP landscape:
 
 - 🧰 **Broader tool coverage.** 105 tools across 16 toolsets — a superset of the archived `server-github` and typical `gh`-CLI wrappers. See [Toolsets](#toolsets) for the full list.
 
-- 🔒 **Read-only mode is one env var.** `GITHUB_PERMISSION=read-only` registers only the 76 read tools; the 28 mutating operations (`create_issue`, `merge_pull_request`, `star_repo`, `run_workflow`, …) are never exposed to the model. Same binary, one variable, verified by tests.
+- 🔒 **Read-only mode is one env var.** `GITHUB_PERMISSION=read-only` registers only the 76 read tools; the 29 mutating operations (`create_issue`, `merge_pull_request`, `star_repo`, `run_workflow`, …) are never exposed to the model. Same binary, one variable, verified by tests.
 
 **`github-mcp-server-js` fills all five** — pure Node 24+ / TypeScript, single-file bundle, `npx`-installable, shipped as both an npm package and a Claude Desktop Extension.
 
@@ -81,7 +81,7 @@ Add this entry (create the file with `{ "mcpServers": {} }` if it doesn't exist)
 Only `GITHUB_TOKEN` is required — the other three are shown with their defaults so you can see every knob at a glance. Common adjustments:
 
 - **GitHub Enterprise Server:** `"GITHUB_SERVER_URL": "github.mycompany.com"` (bare hostname is fine; the server appends `/api/v3` automatically).
-- **Read-only mode:** `"GITHUB_PERMISSION": "read-only"` — the 28 mutating tools (`create_issue`, `merge_pull_request`, `star_repo`, `run_workflow`, …) are never registered.
+- **Read-only mode:** `"GITHUB_PERMISSION": "read-only"` — the 29 mutating tools (`create_issue`, `merge_pull_request`, `star_repo`, `run_workflow`, …) are never registered.
 - **Verbose logs:** `"LOG_LEVEL": "debug"` prints every request/response summary to stderr; Claude Desktop surfaces stderr in its MCP log. Every line is already JSON — no separate format flag needed.
 
 Restart Claude Desktop. All 105 tools become available in every new chat.
