@@ -2,6 +2,7 @@ import { McpServer } from '@modelcontextprotocol/server';
 import type { Octokit } from 'octokit';
 import { registerActivityTools } from './toolsets/activity.js';
 import { registerAppsTools } from './toolsets/apps.js';
+import { registerCopilotTools } from './toolsets/copilot.js';
 import { registerGistsTools } from './toolsets/gists.js';
 import { registerIssuesTools } from './toolsets/issues.js';
 import { registerMiscTools } from './toolsets/misc.js';
@@ -30,6 +31,7 @@ export function buildServer(
   registerPackagesTools(server, octokit, permission);
   registerMiscTools(server, octokit, permission);
   registerAppsTools(server, octokit, permission);
+  registerCopilotTools(server, octokit, permission);
 
   return server;
 }
