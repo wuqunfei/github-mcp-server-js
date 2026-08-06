@@ -59,12 +59,21 @@ Add this entry (create the file with `{ "mcpServers": {} }` if it doesn't exist)
       "command": "npx",
       "args": ["-y", "github-mcp-server-js"],
       "env": {
-        "GITHUB_TOKEN": "ghp_your_personal_access_token_here"
+        "GITHUB_TOKEN": "ghp_your_personal_access_token_here",
+        "GITHUB_SERVER_URL": "github.com",
+        "GITHUB_PERMISSION": "read-write",
+        "LOG_LEVEL": "info"
       }
     }
   }
 }
 ```
+
+Only `GITHUB_TOKEN` is required — the other three are shown with their defaults so you can see every knob at a glance. Common adjustments:
+
+- **GitHub Enterprise Server:** `"GITHUB_SERVER_URL": "github.mycompany.com"` (bare hostname is fine; the server appends `/api/v3` automatically).
+- **Read-only mode:** `"GITHUB_PERMISSION": "read-only"` — the 28 mutating tools (`create_issue`, `merge_pull_request`, `star_repo`, `run_workflow`, …) are never registered.
+- **Verbose logs:** `"LOG_LEVEL": "debug"` prints every request/response summary to stderr; Claude Desktop surfaces stderr in its MCP log.
 
 Restart Claude Desktop. That's it — all 104 tools are available in every chat.
 
