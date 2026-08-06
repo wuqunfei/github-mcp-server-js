@@ -1,4 +1,5 @@
 import type { McpServer } from '@modelcontextprotocol/server';
+import type { RequestError } from '@octokit/request-error';
 import type { Octokit } from 'octokit';
 import { z } from 'zod';
 import { ownerRepoSchema, paginationSchema, toToolResult, toToolError } from './common.js';
@@ -177,6 +178,44 @@ export function registerReposTools(
             content,
             sha,
             branch,
+          });
+          return toToolResult(response.data);
+        } catch (error) {
+          return toToolError(error);
+        }
+      },
+    );
+
+    server.registerTool(
+      'create_branch',
+      {
+        description:
+          'Create a new branch in a GitHub repository from an existing branch or commit SHA. Docs: https://docs.github.com/en/rest/git/refs#create-a-reference',
+        inputSchema: z.object({
+          ...ownerRepoSchema,
+          branch: z.string().describe('Name for the new branch (without the refs/heads/ prefix)'),
+          from: z.string().describe('Source branch name or commit SHA to create the new branch from'),
+        }),
+      },
+      async ({ owner, repo, branch, from }) => {
+        try {
+          let sha: string;
+          try {
+            const branchResponse = await octokit.rest.repos.getBranch({ owner, repo, branch: from });
+            sha = branchResponse.data.commit.sha;
+          } catch (error) {
+            const reqError = error as RequestError;
+            if (reqError.status !== 404) {
+              throw error;
+            }
+            sha = from;
+          }
+
+          const response = await octokit.rest.git.createRef({
+            owner,
+            repo,
+            ref: `refs/heads/${branch}`,
+            sha,
           });
           return toToolResult(response.data);
         } catch (error) {
