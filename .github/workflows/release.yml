@@ -1,30 +1,52 @@
 name: Release
 
+# Triggered on every push to main. When package.json ships a version whose
+# git tag doesn't exist yet, the workflow:
+#   1. Runs the full CI gate.
+#   2. Creates the `vX.Y.Z` tag automatically (no manual `git tag` needed).
+#   3. Ships the .mcpb bundle to a GitHub Release AND publishes to npm
+#      (both jobs run in parallel — either can succeed while the other fails).
+#
+# When main advances without a version bump, the `detect` job flips
+# should_release=false and every downstream job skips.
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    branches: [main]
 
-# Least-privilege default. Individual jobs opt into more when they need it.
 permissions:
   contents: read
 
 jobs:
-  # ── Preflight: verify the tag was cut from main + run the full CI gate.
-  # Any tag whose commit is NOT reachable from origin/main is refused here so
-  # feature-branch tags can never trigger a release.
-  gate:
+  # ── Detect whether this push introduces a new version.
+  detect:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.check.outputs.version }}
+      should_release: ${{ steps.check.outputs.should_release }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Verify tag commit is on main
+      - id: check
+        name: Read package.json version + check for existing tag
         run: |
-          if ! git branch -r --contains "${GITHUB_SHA}" | grep -qE '(^|\s)origin/main$'; then
-            echo "::error::Tag ${GITHUB_REF_NAME} (${GITHUB_SHA}) is not reachable from origin/main. Releases can only be cut from main."
-            exit 1
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if git rev-parse "v$VERSION" >/dev/null 2>&1; then
+            echo "Tag v$VERSION already exists — skipping release."
+            echo "should_release=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "New version v$VERSION — releasing."
+            echo "should_release=true" >> "$GITHUB_OUTPUT"
           fi
+
+  # ── Full CI gate before anything ships.
+  gate:
+    runs-on: ubuntu-latest
+    needs: detect
+    if: needs.detect.outputs.should_release == 'true'
+    steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -37,11 +59,32 @@ jobs:
       - run: npm test
       - run: npm run build
 
+  # ── Create and push the vX.Y.Z tag.
+  tag:
+    runs-on: ubuntu-latest
+    needs: [detect, gate]
+    if: needs.detect.outputs.should_release == 'true'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create and push tag v${{ needs.detect.outputs.version }}
+        env:
+          VERSION: ${{ needs.detect.outputs.version }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git tag "v${VERSION}"
+          git push origin "v${VERSION}"
+
   # ── Ship the Claude Desktop Extension bundle to the tag's GitHub Release.
   # Independent of release-npm — either can succeed while the other fails.
   release-mcpb:
     runs-on: ubuntu-latest
-    needs: gate
+    needs: [detect, tag]
+    if: needs.detect.outputs.should_release == 'true'
     permissions:
       contents: write
     steps:
@@ -58,12 +101,13 @@ jobs:
       - name: Upload .mcpb + .zip to the tag's GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: v${{ needs.detect.outputs.version }}
           files: |
             dist/github-mcp-server-js-*.mcpb
             dist/github-mcp-server-js-*.zip
           fail_on_unmatched_files: true
           generate_release_notes: true
-          prerelease: ${{ contains(github.ref_name, '-') }}
+          prerelease: ${{ contains(needs.detect.outputs.version, '-') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -71,7 +115,8 @@ jobs:
   # Independent of release-mcpb — either can succeed while the other fails.
   release-npm:
     runs-on: ubuntu-latest
-    needs: gate
+    needs: [detect, tag]
+    if: needs.detect.outputs.should_release == 'true'
     environment: dev
     permissions:
       id-token: write
@@ -91,8 +136,10 @@ jobs:
         # No NODE_AUTH_TOKEN — npm exchanges GitHub's OIDC token for a
         # short-lived publish token via the trusted-publisher config on
         # npmjs.com. See /package/github-mcp-server-js/access.
+        env:
+          VERSION: ${{ needs.detect.outputs.version }}
         run: |
-          if [[ "${GITHUB_REF_NAME}" == *-* ]]; then
+          if [[ "$VERSION" == *-* ]]; then
             npm publish --tag next --provenance --access public
           else
             npm publish --provenance --access public

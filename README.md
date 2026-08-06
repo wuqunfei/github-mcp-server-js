@@ -333,8 +333,6 @@ for public repositories).
 | `rerun_workflow_run_failed_jobs` | W | Re-run only the failed jobs in a workflow run. |
 | `approve_workflow_run` | W | Approve a workflow run awaiting fork-PR approval. |
 
-See `docs/superpowers/specs/2026-08-05-github-mcp-server-design.md` for the full
-architecture.
 
 ## 🧪 Testing
 
@@ -455,7 +453,7 @@ Every published version is built by GitHub Actions from a tagged commit, [signed
 ## 🙏 Credits
 
 - **[octokit.js](https://github.com/octokit/octokit.js)** by GitHub — the REST/GraphQL client every tool wraps. Apache-2.0.
-- **[MCP TypeScript SDK v2](https://github.com/modelcontextprotocol/typescript-sdk)** by Anthropic — the MCP server framework. MIT.
+- **[MCP TypeScript](https://github.com/modelcontextprotocol/typescript-sdk)** by Anthropic — the MCP server framework. MIT.
 - **Prior art:** [`@modelcontextprotocol/server-github`](https://github.com/modelcontextprotocol/servers-archived/tree/main/src/github) (archived, original Anthropic reference server) and [`github/github-mcp-server`](https://github.com/github/github-mcp-server) (GitHub's official Go / Docker implementation). Both remain excellent choices where their constraints fit.
 
 ## 📄 License
