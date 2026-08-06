@@ -1,11 +1,10 @@
 <p align="center">
   <img src="./assets/icon-248.png" alt="github-mcp-server-js logo — the GitHub Octocat reimagined as a cat-suited kitten" width="200" />
 </p>
-
-<h1 align="center">github-mcp-server-js</h1>
+<h2 align="center">Github-MCP-Server-JS</h2>
 
 <p align="center">
-  <strong>A pure-Node GitHub MCP server for Claude Desktop and any MCP-compatible client — 104 REST tools across 16 toolsets, no Docker, no Go, one <code>npx</code> command.</strong>
+  <strong>🚀 A pure Node.js GitHub MCP server for Claude Desktop and any MCP-compatible client — ⚡ 104 REST tools across 16 toolsets, 🚫 no Docker, 🚫 no Go, 🚫 no python. ✨</strong>
 </p>
 
 <p align="center">
@@ -17,8 +16,8 @@
 
 Built exclusively on the two **first-party SDKs from the official providers** — no custom HTTP client, no hand-rolled protocol layer:
 
-- 🐙 **[octokit.js](https://github.com/octokit/octokit.js)** — GitHub's official REST/GraphQL client. Every tool in this server is a thin, typed wrapper around a verified `octokit.rest.*` method.
-- 🤖 **[MCP TypeScript SDK v2](https://github.com/modelcontextprotocol/typescript-sdk)** — Anthropic's official Model Context Protocol server SDK.
+- 🐙 **[Octokit.js](https://github.com/octokit/octokit.js)** — GitHub's official REST/GraphQL client. Every tool in this server is a thin, typed wrapper around a verified `octokit.rest.*` method.
+- 🤖 **[MCP TypeScript](https://github.com/modelcontextprotocol/typescript-sdk)** — Anthropic's official Model Context Protocol server SDK.
 
 ## ✨ Highlights
 
@@ -33,24 +32,19 @@ Built exclusively on the two **first-party SDKs from the official providers** �
 
 ## 💡 Why this project exists
 
-Five practical gaps in the current GitHub-MCP landscape:
+Five gaps in the current GitHub-MCP landscape:
 
-- **No remote MCP on private / enterprise GitHub.**
-  GitHub Enterprise Server (GHES) and most managed enterprise deployments don't yet expose a remote MCP endpoint. Reaching a private repo from Claude means running a local server yourself.
+- 🏢 **No remote MCP on enterprise GitHub.** GHES and most managed enterprise deployments don't yet expose a remote MCP endpoint — run a local server yourself.
 
-- **The original Anthropic reference server is deprecated.**
-  [`@modelcontextprotocol/server-github`](https://www.npmjs.com/package/@modelcontextprotocol/server-github) is archived at [modelcontextprotocol/servers-archived](https://github.com/modelcontextprotocol/servers-archived/tree/main/src/github) — no fixes, no new tools.
+- 🗄️ **The Anthropic reference server is deprecated.** [`@modelcontextprotocol/server-github`](https://www.npmjs.com/package/@modelcontextprotocol/server-github) is [archived](https://github.com/modelcontextprotocol/servers-archived/tree/main/src/github). No fixes, no new tools.
 
-- **GitHub's newer official server needs Docker + Go.**
-  [github/github-mcp-server](https://github.com/github/github-mcp-server) ships as a Go binary you run via Docker. Many enterprise environments forbid Docker Desktop or a Go toolchain on developer machines for policy or licensing reasons, leaving those users with no supported local option.
+- 🐳 **The newer official server needs Docker + Go.** [github/github-mcp-server](https://github.com/github/github-mcp-server) ships as a Docker-run Go binary — often blocked by enterprise policy.
 
-- **Broader tool coverage than the alternatives.**
-  104 tools across 16 toolsets (issues, pull requests, actions, code security, Copilot admin, ProjectsV2, and more) — a superset of what the archived `@modelcontextprotocol/server-github` shipped and what typical `gh`-CLI wrappers surface. See the [Toolsets](#toolsets) tables below for the full list.
+- 🧰 **Broader tool coverage.** 104 tools across 16 toolsets — a superset of the archived `server-github` and typical `gh`-CLI wrappers. See [Toolsets](#toolsets) for the full list.
 
-- **Security by default — read-only mode is one env var away.**
-  Set `GITHUB_PERMISSION=read-only` and the server registers only the 76 read tools; every mutating operation (`create_issue`, `merge_pull_request`, `create_or_update_file`, `star_repo`, `run_workflow`, …) is never even exposed to the model. Flip to `read-write` (default) for the full 104-tool CRUD surface when you actually need it. Same binary, one variable, verified by the test suite.
+- 🔒 **Read-only mode is one env var.** `GITHUB_PERMISSION=read-only` registers only the 76 read tools; the 28 mutating operations (`create_issue`, `merge_pull_request`, `star_repo`, `run_workflow`, …) are never exposed to the model. Same binary, one variable, verified by tests.
 
-**`github-mcp-server-js` fills all five:** pure Node 24+ / TypeScript, single-file bundle, `npx`-installable, shipped as both an npm package and a Claude Desktop Extension.
+**`github-mcp-server-js` fills all five** — pure Node 24+ / TypeScript, single-file bundle, `npx`-installable, shipped as both an npm package and a Claude Desktop Extension.
 
 ---
 
