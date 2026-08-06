@@ -9,6 +9,7 @@ import { registerIssuesTools } from './toolsets/issues.js';
 import { registerMiscTools } from './toolsets/misc.js';
 import { registerOrgsTeamsTools } from './toolsets/orgs_teams.js';
 import { registerPackagesTools } from './toolsets/packages.js';
+import { registerProjectsTools } from './toolsets/projects.js';
 import { registerPullRequestsTools } from './toolsets/pull_requests.js';
 import { registerReposTools } from './toolsets/repos.js';
 import { registerSearchTools } from './toolsets/search.js';
@@ -36,6 +37,7 @@ export function buildServer(
   registerCopilotTools(server, octokit, permission);
   registerOrgsTeamsTools(server, octokit, permission);
   registerCodespacesTools(server, octokit, permission);
+  registerProjectsTools(server, octokit, permission);
 
   return server;
 }

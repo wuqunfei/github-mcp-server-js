@@ -41,6 +41,7 @@ Currently implemented:
 - `copilot` — Copilot org-admin tools (org-owner PAT required): Copilot subscription details, seat list, per-user seat details (`get_copilot_organization_details`, `list_copilot_seats`, `get_copilot_seat_details_for_user`)
 - `orgs_teams` — organization inspection, team listing/lookup, and team-membership management
 - `codespaces` — list, inspect, create, start, and stop codespaces for the authenticated user
+- `projects` — list and inspect GitHub ProjectsV2 org projects, items, and fields
 
 Additional toolsets (actions, and more) are tracked in
 `docs/superpowers/specs/2026-08-05-github-mcp-server-design.md`.
