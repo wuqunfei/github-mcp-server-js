@@ -140,7 +140,7 @@ Configuration is entirely via environment variables. Claude Desktop sets them fr
 
 All 16 toolsets are shipped, exposing **104 tools** total. Write tools are only registered when `GITHUB_PERMISSION=read-write` (the default); `read-only` mode registers the read tools alone. The **Access** column indicates: **R** = registered in read-only mode; **W** = registered only in read-write mode.
 
-### `repos` — repositories, branches, commits, tags, file contents
+### 📁 `repos` — repositories, branches, commits, tags, file contents
 
 | Tool | Access | Description |
 |---|---|---|
@@ -153,7 +153,7 @@ All 16 toolsets are shipped, exposing **104 tools** total. Write tools are only 
 | `list_tags` | R | List tags in a repository. |
 | `create_or_update_file` | W | Create a new file or update an existing file in a repository. |
 
-### `issues` — issue CRUD, comments, labels, conversation locking
+### 🐛 `issues` — issue CRUD, comments, labels, conversation locking
 
 | Tool | Access | Description |
 |---|---|---|
@@ -170,7 +170,7 @@ All 16 toolsets are shipped, exposing **104 tools** total. Write tools are only 
 | `lock_issue` | W | Lock an issue conversation to collaborators only. |
 | `unlock_issue` | W | Unlock a previously locked issue conversation. |
 
-### `pull_requests` — PR listing, creation, merging, reviews
+### 🔀 `pull_requests` — PR listing, creation, merging, reviews
 
 | Tool | Access | Description |
 |---|---|---|
@@ -185,7 +185,7 @@ All 16 toolsets are shipped, exposing **104 tools** total. Write tools are only 
 | `create_pull_request_review` | W | Create a review on a pull request. |
 | `request_reviewers` | W | Request reviewers for a pull request. |
 
-### `search` — repo, code, commit, issue/PR, user search
+### 🔎 `search` — repo, code, commit, issue/PR, user search
 
 | Tool | Access | Description |
 |---|---|---|
@@ -195,7 +195,7 @@ All 16 toolsets are shipped, exposing **104 tools** total. Write tools are only 
 | `search_issues` | R | Search issues and pull requests (scope with `is:issue` or `is:pull-request`). |
 | `search_users` | R | Search GitHub users. |
 
-### `users` — profiles, followers, following, hovercard
+### 👤 `users` — profiles, followers, following, hovercard
 
 | Tool | Access | Description |
 |---|---|---|
@@ -205,7 +205,7 @@ All 16 toolsets are shipped, exposing **104 tools** total. Write tools are only 
 | `list_user_following` | R | List the users that a given user follows. |
 | `get_user_hovercard` | R | Get contextual "hovercard" information about a user, optionally scoped to a subject. |
 
-### `gists` — list, get, create, update, delete gists
+### 📝 `gists` — list, get, create, update, delete gists
 
 | Tool | Access | Description |
 |---|---|---|
@@ -215,7 +215,7 @@ All 16 toolsets are shipped, exposing **104 tools** total. Write tools are only 
 | `update_gist` | W | Update an existing gist: change description, add/rename/delete files. |
 | `delete_gist` | W | Delete a gist (permanent — only the owner can delete). |
 
-### `activity` — notifications, starred repos, star/unstar
+### 🔔 `activity` — notifications, starred repos, star/unstar
 
 | Tool | Access | Description |
 |---|---|---|
@@ -225,7 +225,7 @@ All 16 toolsets are shipped, exposing **104 tools** total. Write tools are only 
 | `star_repo` | W | Star a repository on behalf of the authenticated user. |
 | `unstar_repo` | W | Unstar a repository the authenticated user previously starred. |
 
-### `packages` — GitHub Packages owned by the authenticated user
+### 📦 `packages` — GitHub Packages owned by the authenticated user
 
 Requires the `read:packages` token scope. `package_type` is required and must be
 one of `npm`, `maven`, `rubygems`, `docker`, `nuget`, `container`.
@@ -237,7 +237,7 @@ one of `npm`, `maven`, `rubygems`, `docker`, `nuget`, `container`.
 | `list_package_versions_for_authenticated_user` | R | List all versions of a package owned by the authenticated user. |
 | `get_package_version_for_authenticated_user` | R | Get a specific version of a package owned by the authenticated user. |
 
-### `misc` — utility endpoints
+### 🔧 `misc` — utility endpoints
 
 | Tool | Access | Description |
 |---|---|---|
@@ -246,7 +246,7 @@ one of `npm`, `maven`, `rubygems`, `docker`, `nuget`, `container`.
 | `list_emojis` | R | List all emoji names and their image URLs available on GitHub. |
 | `render_markdown` | R | Render a Markdown string to HTML using GitHub's renderer (returns raw HTML). |
 
-### `apps` — GitHub App public info and user installations
+### 🔌 `apps` — GitHub App public info and user installations
 
 | Tool | Access | Description |
 |---|---|---|
@@ -254,7 +254,7 @@ one of `npm`, `maven`, `rubygems`, `docker`, `nuget`, `container`.
 | `list_installations_for_authenticated_user` | R | List GitHub App installations accessible to the authenticated user. |
 | `list_installation_repos_for_authenticated_user` | R | List repositories the authenticated user can access under a specific installation. |
 
-### `copilot` — Copilot org-admin (org-owner PAT required)
+### 🪄 `copilot` — Copilot org-admin (org-owner PAT required)
 
 | Tool | Access | Description |
 |---|---|---|
@@ -262,7 +262,7 @@ one of `npm`, `maven`, `rubygems`, `docker`, `nuget`, `container`.
 | `list_copilot_seats` | R | List all Copilot seat assignments in an organization. |
 | `get_copilot_seat_details_for_user` | R | Get Copilot seat details (last activity, editor) for a specific org member. |
 
-### `orgs_teams` — organization inspection and team membership
+### 🏢 `orgs_teams` — organization inspection and team membership
 
 | Tool | Access | Description |
 |---|---|---|
@@ -275,7 +275,7 @@ one of `npm`, `maven`, `rubygems`, `docker`, `nuget`, `container`.
 | `add_or_update_team_membership` | W | Add a user to a team or update their role (requires org-owner or team-maintainer). |
 | `remove_team_membership` | W | Remove a user from a team (requires org-owner or team-admin). |
 
-### `codespaces` — user codespace lifecycle
+### 💻 `codespaces` — user codespace lifecycle
 
 | Tool | Access | Description |
 |---|---|---|
@@ -285,7 +285,7 @@ one of `npm`, `maven`, `rubygems`, `docker`, `nuget`, `container`.
 | `start_codespace` | W | Start a stopped codespace. |
 | `stop_codespace` | W | Stop a running codespace. |
 
-### `projects` — GitHub ProjectsV2 (org-scoped, read-only)
+### 📋 `projects` — GitHub ProjectsV2 (org-scoped, read-only)
 
 | Tool | Access | Description |
 |---|---|---|
@@ -295,7 +295,7 @@ one of `npm`, `maven`, `rubygems`, `docker`, `nuget`, `container`.
 | `list_org_project_fields` | R | List fields configured on a ProjectsV2 project. |
 | `get_org_project_item` | R | Get a single item in a ProjectsV2 project. |
 
-### `code_security` — code scanning, secrets, Dependabot, advisories
+### 🛡️ `code_security` — code scanning, secrets, Dependabot, advisories
 
 Alert-inspection tools require the `security_events` PAT scope (or `public_repo`
 for public repositories).
@@ -313,7 +313,7 @@ for public repositories).
 | `list_repository_advisories` | R | List repository security advisories. |
 | `get_repository_advisory` | R | Get a repository security advisory by GHSA ID. |
 
-### `actions` — workflows, runs, jobs, artifacts, check runs
+### 🎬 `actions` — workflows, runs, jobs, artifacts, check runs
 
 | Tool | Access | Description |
 |---|---|---|
@@ -355,6 +355,60 @@ GITHUB_TOKEN=ghp_... npm run test:integration:write
 
 The scripts run `npm run build` first so the tests exercise the built
 `dist/cli.js` over stdio, matching real client usage.
+
+## 🔐 Build your own bundle (zero trust)
+
+Prefer not to trust binaries we publish? Every release artifact is fully reproducible from source. You audit the code, run the same gates our CI runs, and produce your own `.mcpb` and `.zip` — no need to trust the SHA-256 on our [GitHub Releases](https://github.com/wuqunfei/github-mcp-server-js/releases) page or the npm registry.
+
+### Prerequisites
+
+- **Node.js 24+** — verify with `node --version`
+- **npm** — bundled with Node 24 (currently npm 11.x); no separate install
+- **git**
+
+### Full audit + build pipeline
+
+```bash
+# 1. Clone the repo at the exact release tag you want to reproduce.
+git clone https://github.com/wuqunfei/github-mcp-server-js
+cd github-mcp-server-js
+git checkout v0.1.1
+
+# 2. Audit the code. Nothing is executed yet.
+git log --stat v0.1.0..v0.1.1        # review commits between releases
+# Or open the tree in your editor and read every changed file.
+
+# 3. Install the exact dependency versions recorded in package-lock.json.
+#    No transitive drift, no surprise upgrades.
+npm ci
+
+# 4. Run the same gate our release CI runs. Any failure means don't ship.
+npm run typecheck
+npm run lint
+npm run spellcheck
+npm audit --audit-level=high
+npm test                              # 211 hermetic unit tests, nock-mocked
+
+# 5. Build the self-contained CLI. Every runtime dependency is inlined
+#    into a single ~1.85 MB file — nothing loaded from node_modules at runtime.
+npm run build                         # → dist/cli.js
+
+# 6. Pack the extension. The pack script:
+#      - enforces manifest.json.version === package.json.version
+#      - validates manifest.json against the .mcpb v0.1 schema
+#      - re-runs the build for freshness
+#      - packs and then unpacks the archive to assert exactly the three
+#        expected entries (manifest.json, dist/cli.js, assets/icon.png)
+npm run pack:mcpb
+# → dist/github-mcp-server-js-<version>.mcpb
+# → dist/github-mcp-server-js-<version>.zip   (byte-identical copy)
+```
+
+### Install your locally built bundle
+
+Drag the resulting `.mcpb` (or the extracted `.zip`) into **Claude Desktop → Settings → Extensions** exactly as in [Path 2](#-path-2--claude-desktop-extension-via-drag-drop-mcpb) or [Path 3](#-path-3--claude-desktop-unpacked-extension-zip-developer-mode).
+
+> **Note on byte reproducibility.** The SHA-256 of your local `.mcpb` may differ from our published artifact because zip entries encode file modification timestamps. The *contents* are identical when you build from the same commit with the same locked dependencies. To compare content, use `npx @anthropic-ai/mcpb unpack <file> <dir>` on both archives and diff the extracted trees.
 
 ## 🚢 Releases and provenance
 
