@@ -30,7 +30,10 @@
     "octo",
     "Oklud",
     "Vncm",
-    "Nlcj"
+    "Nlcj",
+    "ghsa",
+    "cwes",
+    "unreviewed"
   ],
   "ignorePaths": ["node_modules/**", "dist/**"]
 }
