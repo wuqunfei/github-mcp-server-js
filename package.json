@@ -1,6 +1,6 @@
 {
   "name": "github-mcp-server-js",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A GitHub MCP server built on octokit.js and the MCP TypeScript SDK v2 — 104 tools across 16 toolsets, packaged as npm and .mcpb Claude Desktop Extension.",
   "type": "module",
   "license": "MIT",
