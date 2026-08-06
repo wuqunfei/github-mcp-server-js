@@ -20,7 +20,7 @@ export function registerCodeSecurityTools(
     'list_code_scanning_alerts',
     {
       description:
-        'List code-scanning alerts for a repository. Requires `security_events` PAT scope for private repos, `public_repo` for public.',
+        'List code-scanning alerts for a repository. Requires `security_events` PAT scope for private repos, `public_repo` for public. Docs: https://docs.github.com/en/rest/code-scanning/code-scanning#list-code-scanning-alerts-for-a-repository',
       inputSchema: z.object({
         ...ownerRepoSchema,
         tool_name: z.string().optional().describe('Filter by scanning tool name.'),
@@ -58,7 +58,7 @@ export function registerCodeSecurityTools(
     'get_code_scanning_alert',
     {
       description:
-        'Get a code-scanning alert. Requires `security_events` PAT scope (private) or `public_repo` (public).',
+        'Get a code-scanning alert. Requires `security_events` PAT scope (private) or `public_repo` (public). Docs: https://docs.github.com/en/rest/code-scanning/code-scanning#get-a-code-scanning-alert',
       inputSchema: z.object({ ...ownerRepoSchema, ...alertNumberSchema }),
     },
     async ({ owner, repo, alert_number }) => {
@@ -74,7 +74,7 @@ export function registerCodeSecurityTools(
   server.registerTool(
     'list_secret_scanning_alerts',
     {
-      description: 'List secret-scanning alerts for a repository. Requires `security_events` PAT scope.',
+      description: 'List secret-scanning alerts for a repository. Requires `security_events` PAT scope. Docs: https://docs.github.com/en/rest/secret-scanning/secret-scanning#list-secret-scanning-alerts-for-a-repository',
       inputSchema: z.object({
         ...ownerRepoSchema,
         state: z.enum(['open', 'resolved']).optional().describe('Filter by state.'),
@@ -104,7 +104,7 @@ export function registerCodeSecurityTools(
   server.registerTool(
     'get_secret_scanning_alert',
     {
-      description: 'Get a secret-scanning alert. Requires `security_events` PAT scope.',
+      description: 'Get a secret-scanning alert. Requires `security_events` PAT scope. Docs: https://docs.github.com/en/rest/secret-scanning/secret-scanning#get-a-secret-scanning-alert',
       inputSchema: z.object({ ...ownerRepoSchema, ...alertNumberSchema }),
     },
     async ({ owner, repo, alert_number }) => {
@@ -124,7 +124,7 @@ export function registerCodeSecurityTools(
   server.registerTool(
     'list_dependabot_alerts',
     {
-      description: 'List Dependabot alerts for a repository. Requires `security_events` PAT scope.',
+      description: 'List Dependabot alerts for a repository. Requires `security_events` PAT scope. Docs: https://docs.github.com/en/rest/dependabot/alerts#list-dependabot-alerts-for-a-repository',
       inputSchema: z.object({
         ...ownerRepoSchema,
         state: z.string().optional().describe('Comma-separated states (e.g. "open,dismissed").'),
@@ -156,7 +156,7 @@ export function registerCodeSecurityTools(
   server.registerTool(
     'get_dependabot_alert',
     {
-      description: 'Get a Dependabot alert. Requires `security_events` PAT scope.',
+      description: 'Get a Dependabot alert. Requires `security_events` PAT scope. Docs: https://docs.github.com/en/rest/dependabot/alerts#get-a-dependabot-alert',
       inputSchema: z.object({ ...ownerRepoSchema, ...alertNumberSchema }),
     },
     async ({ owner, repo, alert_number }) => {
@@ -172,7 +172,7 @@ export function registerCodeSecurityTools(
   server.registerTool(
     'list_global_advisories',
     {
-      description: 'List GitHub Global Security Advisories from the public GHSA database.',
+      description: 'List GitHub Global Security Advisories from the public GHSA database. Docs: https://docs.github.com/en/rest/security-advisories/global-advisories#list-global-security-advisories',
       inputSchema: z.object({
         ecosystem: z
           .enum([
@@ -218,7 +218,7 @@ export function registerCodeSecurityTools(
   server.registerTool(
     'get_global_advisory',
     {
-      description: 'Get a global GitHub security advisory by GHSA ID.',
+      description: 'Get a global GitHub security advisory by GHSA ID. Docs: https://docs.github.com/en/rest/security-advisories/global-advisories#get-a-global-security-advisory',
       inputSchema: z.object({ ...ghsaIdSchema }),
     },
     async ({ ghsa_id }) => {
@@ -234,7 +234,7 @@ export function registerCodeSecurityTools(
   server.registerTool(
     'list_repository_advisories',
     {
-      description: 'List repository security advisories.',
+      description: 'List repository security advisories. Docs: https://docs.github.com/en/rest/security-advisories/repository-advisories#list-repository-security-advisories',
       inputSchema: z.object({ ...ownerRepoSchema, ...paginationSchema }),
     },
     async ({ owner, repo, page, per_page }) => {
@@ -255,7 +255,7 @@ export function registerCodeSecurityTools(
   server.registerTool(
     'get_repository_advisory',
     {
-      description: 'Get a repository security advisory by GHSA ID.',
+      description: 'Get a repository security advisory by GHSA ID. Docs: https://docs.github.com/en/rest/security-advisories/repository-advisories#get-a-repository-security-advisory',
       inputSchema: z.object({ ...ownerRepoSchema, ...ghsaIdSchema }),
     },
     async ({ owner, repo, ghsa_id }) => {

@@ -14,11 +14,11 @@ export function registerAppsTools(
     'get_app',
     {
       description:
-        'Get public metadata for a GitHub App by its URL slug. ' +
+        'Get public metadata for a GitHub App by its URL slug.' +
         'Returns the app\'s id, name, description, owner, external URL, ' +
         'permissions, subscribed events, and installation count. ' +
         'Does not require authentication — the app must be publicly listed. ' +
-        'The slug is the URL-friendly name visible in github.com/apps/<slug>.',
+        'The slug is the URL-friendly name visible in github.com/apps/<slug>.  Docs: https://docs.github.com/en/rest/apps/apps#get-an-app',
       inputSchema: z.object({
         app_slug: z
           .string()
@@ -44,13 +44,13 @@ export function registerAppsTools(
     'list_installations_for_authenticated_user',
     {
       description:
-        'List GitHub App installations accessible to the authenticated user. ' +
+        'List GitHub App installations accessible to the authenticated user.' +
         'Returns installations on the user\'s personal account and on organizations ' +
         'where the user is a member, along with the permissions and events each installation subscribes to. ' +
         'Useful for discovering which apps are installed and their installation IDs ' +
         '(needed for list_installation_repos_for_authenticated_user). ' +
         'Requires a token with read:user scope or higher. ' +
-        'Paginate with page and per_page.',
+        'Paginate with page and per_page.  Docs: https://docs.github.com/en/rest/apps/installations#list-app-installations-accessible-to-the-user-access-token',
       inputSchema: z.object({
         ...paginationSchema,
       }),
@@ -74,11 +74,11 @@ export function registerAppsTools(
     'list_installation_repos_for_authenticated_user',
     {
       description:
-        'List repositories that the authenticated user can access for a specific GitHub App installation. ' +
+        'List repositories that the authenticated user can access for a specific GitHub App installation.' +
         'Returns repositories where the user has explicit read, write, or admin permission ' +
         'through direct ownership, collaborator access, or organization membership. ' +
         'Use list_installations_for_authenticated_user to discover installation IDs first. ' +
-        'Paginate with page and per_page.',
+        'Paginate with page and per_page.  Docs: https://docs.github.com/en/rest/apps/installations#list-repositories-accessible-to-the-user-access-token',
       inputSchema: z.object({
         installation_id: z
           .number()

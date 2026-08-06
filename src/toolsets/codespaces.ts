@@ -15,7 +15,7 @@ export function registerCodespacesTools(
   server.registerTool(
     'list_codespaces',
     {
-      description: 'List codespaces for the authenticated user.',
+      description: 'List codespaces for the authenticated user. Docs: https://docs.github.com/en/rest/codespaces/codespaces#list-codespaces-for-the-authenticated-user',
       inputSchema: z.object({
         repository_id: z.number().int().optional().describe('Filter by repository ID.'),
         ...paginationSchema,
@@ -38,7 +38,7 @@ export function registerCodespacesTools(
   server.registerTool(
     'get_codespace',
     {
-      description: 'Get a codespace by name for the authenticated user.',
+      description: 'Get a codespace by name for the authenticated user. Docs: https://docs.github.com/en/rest/codespaces/codespaces#get-a-codespace-for-the-authenticated-user',
       inputSchema: z.object({ ...codespaceNameSchema }),
     },
     async ({ codespace_name }) => {
@@ -55,7 +55,7 @@ export function registerCodespacesTools(
     server.registerTool(
       'create_codespace_in_repo',
       {
-        description: 'Create a codespace in a repository for the authenticated user.',
+        description: 'Create a codespace in a repository for the authenticated user. Docs: https://docs.github.com/en/rest/codespaces/codespaces#create-a-codespace-in-a-repository',
         inputSchema: z.object({
           ...ownerRepoSchema,
           ref: z.string().optional().describe('Git ref (branch/tag/SHA) to base the codespace on.'),
@@ -88,7 +88,7 @@ export function registerCodespacesTools(
     server.registerTool(
       'start_codespace',
       {
-        description: 'Start a stopped codespace for the authenticated user.',
+        description: 'Start a stopped codespace for the authenticated user. Docs: https://docs.github.com/en/rest/codespaces/codespaces#start-a-codespace-for-the-authenticated-user',
         inputSchema: z.object({ ...codespaceNameSchema }),
       },
       async ({ codespace_name }) => {
@@ -104,7 +104,7 @@ export function registerCodespacesTools(
     server.registerTool(
       'stop_codespace',
       {
-        description: 'Stop a running codespace for the authenticated user.',
+        description: 'Stop a running codespace for the authenticated user. Docs: https://docs.github.com/en/rest/codespaces/codespaces#stop-a-codespace-for-the-authenticated-user',
         inputSchema: z.object({ ...codespaceNameSchema }),
       },
       async ({ codespace_name }) => {

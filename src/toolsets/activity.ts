@@ -13,7 +13,7 @@ export function registerActivityTools(
     'list_notifications',
     {
       description:
-        'List notifications for the authenticated user. Returns an array of thread objects representing unread (or all) notifications. Each thread includes the subject (title, type, URL), repository, reason, and updated_at timestamp. Use all=true to include already-read notifications. Paginate with page and per_page (max 50 per page — GitHub caps this endpoint at 50, not the usual 100).',
+        'List notifications for the authenticated user. Returns an array of thread objects representing unread (or all) notifications. Each thread includes the subject (title, type, URL), repository, reason, and updated_at timestamp. Use all=true to include already-read notifications. Paginate with page and per_page (max 50 per page — GitHub caps this endpoint at 50, not the usual 100). Docs: https://docs.github.com/en/rest/activity/notifications#list-notifications-for-the-authenticated-user',
       inputSchema: z.object({
         all: z
           .boolean()
@@ -71,7 +71,7 @@ export function registerActivityTools(
     'list_starred_repos',
     {
       description:
-        'List repositories starred by the authenticated user. Returns an array of repository objects including id, name, full_name, html_url, description, stargazers_count, language, and owner. Sort by created (when the user starred it) or updated (when the repo was last pushed to). Paginate with page and per_page.',
+        'List repositories starred by the authenticated user. Returns an array of repository objects including id, name, full_name, html_url, description, stargazers_count, language, and owner. Sort by created (when the user starred it) or updated (when the repo was last pushed to). Paginate with page and per_page. Docs: https://docs.github.com/en/rest/activity/starring#list-repositories-starred-by-the-authenticated-user',
       inputSchema: z.object({
         sort: z
           .enum(['created', 'updated'])
@@ -105,7 +105,7 @@ export function registerActivityTools(
     'check_repo_starred',
     {
       description:
-        'Check whether the authenticated user has starred a given repository. Returns { starred: true } if the repository is starred, or { starred: false } if it is not. Never returns an error for a 404 (not-starred) response — only errors on authentication failures (401/403) or truly unexpected conditions.',
+        'Check whether the authenticated user has starred a given repository. Returns { starred: true } if the repository is starred, or { starred: false } if it is not. Never returns an error for a 404 (not-starred) response — only errors on authentication failures (401/403) or truly unexpected conditions. Docs: https://docs.github.com/en/rest/activity/starring#check-if-a-repository-is-starred-by-the-authenticated-user',
       inputSchema: z.object({
         ...ownerRepoSchema,
       }),
@@ -129,7 +129,7 @@ export function registerActivityTools(
       'star_repo',
       {
         description:
-          'Star a repository on behalf of the authenticated user. Starring marks a repository as interesting and adds it to the authenticated user\'s starred list (visible via list_starred_repos). Returns { starred: true } on success. Returns an error if the repository does not exist or the token lacks sufficient scope.',
+          "Star a repository on behalf of the authenticated user. Starring marks a repository as interesting and adds it to the authenticated user's starred list (visible via list_starred_repos). Returns { starred: true } on success. Returns an error if the repository does not exist or the token lacks sufficient scope. Docs: https://docs.github.com/en/rest/activity/starring#star-a-repository-for-the-authenticated-user",
         inputSchema: z.object({
           ...ownerRepoSchema,
         }),
@@ -148,7 +148,7 @@ export function registerActivityTools(
       'unstar_repo',
       {
         description:
-          'Unstar a repository that the authenticated user has previously starred. Removes the repository from the authenticated user\'s starred list. Returns { starred: false } on success. This is a no-op if the repository was not already starred (GitHub returns 204 either way), so the result is always { starred: false } on a 204 response.',
+          "Unstar a repository that the authenticated user has previously starred. Removes the repository from the authenticated user's starred list. Returns { starred: false } on success. This is a no-op if the repository was not already starred (GitHub returns 204 either way), so the result is always { starred: false } on a 204 response. Docs: https://docs.github.com/en/rest/activity/starring#unstar-a-repository-for-the-authenticated-user",
         inputSchema: z.object({
           ...ownerRepoSchema,
         }),

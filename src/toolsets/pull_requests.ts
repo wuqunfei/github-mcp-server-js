@@ -11,7 +11,7 @@ export function registerPullRequestsTools(
   server.registerTool(
     'list_pull_requests',
     {
-      description: 'List pull requests in a GitHub repository.',
+      description: 'List pull requests in a GitHub repository. Docs: https://docs.github.com/en/rest/pulls/pulls#list-pull-requests',
       inputSchema: z.object({
         ...ownerRepoSchema,
         state: z.enum(['open', 'closed', 'all']).optional().describe('Filter by pull request state (defaults to open)'),
@@ -48,7 +48,7 @@ export function registerPullRequestsTools(
   server.registerTool(
     'get_pull_request',
     {
-      description: 'Get a single pull request in a GitHub repository.',
+      description: 'Get a single pull request in a GitHub repository. Docs: https://docs.github.com/en/rest/pulls/pulls#get-a-pull-request',
       inputSchema: z.object({
         ...ownerRepoSchema,
         ...pullNumberSchema,
@@ -67,7 +67,7 @@ export function registerPullRequestsTools(
   server.registerTool(
     'list_pull_request_files',
     {
-      description: 'List the files changed in a GitHub pull request.',
+      description: 'List the files changed in a GitHub pull request. Docs: https://docs.github.com/en/rest/pulls/pulls#list-pull-requests-files',
       inputSchema: z.object({
         ...ownerRepoSchema,
         ...pullNumberSchema,
@@ -87,7 +87,7 @@ export function registerPullRequestsTools(
   server.registerTool(
     'list_pull_request_commits',
     {
-      description: 'List the commits on a GitHub pull request.',
+      description: 'List the commits on a GitHub pull request. Docs: https://docs.github.com/en/rest/pulls/pulls#list-commits-on-a-pull-request',
       inputSchema: z.object({
         ...ownerRepoSchema,
         ...pullNumberSchema,
@@ -107,7 +107,7 @@ export function registerPullRequestsTools(
   server.registerTool(
     'list_pull_request_reviews',
     {
-      description: 'List the reviews on a GitHub pull request.',
+      description: 'List the reviews on a GitHub pull request. Docs: https://docs.github.com/en/rest/pulls/reviews#list-reviews-for-a-pull-request',
       inputSchema: z.object({
         ...ownerRepoSchema,
         ...pullNumberSchema,
@@ -128,7 +128,7 @@ export function registerPullRequestsTools(
     server.registerTool(
       'create_pull_request',
       {
-        description: 'Create a new pull request in a GitHub repository.',
+        description: 'Create a new pull request in a GitHub repository. Docs: https://docs.github.com/en/rest/pulls/pulls#create-a-pull-request',
         inputSchema: z.object({
           ...ownerRepoSchema,
           title: z.string().optional().describe('Pull request title (required unless issue is specified)'),
@@ -163,7 +163,7 @@ export function registerPullRequestsTools(
     server.registerTool(
       'update_pull_request',
       {
-        description: 'Update an existing pull request in a GitHub repository.',
+        description: 'Update an existing pull request in a GitHub repository. Docs: https://docs.github.com/en/rest/pulls/pulls#update-a-pull-request',
         inputSchema: z.object({
           ...ownerRepoSchema,
           ...pullNumberSchema,
@@ -196,7 +196,7 @@ export function registerPullRequestsTools(
     server.registerTool(
       'merge_pull_request',
       {
-        description: 'Merge a pull request in a GitHub repository.',
+        description: 'Merge a pull request in a GitHub repository. Docs: https://docs.github.com/en/rest/pulls/pulls#merge-a-pull-request',
         inputSchema: z.object({
           ...ownerRepoSchema,
           ...pullNumberSchema,
@@ -227,7 +227,7 @@ export function registerPullRequestsTools(
     server.registerTool(
       'create_pull_request_review',
       {
-        description: 'Create a review on a GitHub pull request.',
+        description: 'Create a review on a GitHub pull request. Docs: https://docs.github.com/en/rest/pulls/reviews#create-a-review-for-a-pull-request',
         inputSchema: z.object({
           ...ownerRepoSchema,
           ...pullNumberSchema,
@@ -259,7 +259,7 @@ export function registerPullRequestsTools(
     server.registerTool(
       'request_reviewers',
       {
-        description: 'Request reviewers for a GitHub pull request.',
+        description: 'Request reviewers for a GitHub pull request. Docs: https://docs.github.com/en/rest/pulls/review-requests#request-reviewers-for-a-pull-request',
         inputSchema: z.object({
           ...ownerRepoSchema,
           ...pullNumberSchema,

@@ -20,11 +20,11 @@ export function registerPackagesTools(
     'list_packages_for_authenticated_user',
     {
       description:
-        'List packages owned by the authenticated user (the owner of GITHUB_TOKEN). ' +
+        'List packages owned by the authenticated user (the owner of GITHUB_TOKEN).' +
         'Requires the read:packages token scope. The package_type filter is required — ' +
         'pass one of npm, maven, rubygems, docker, nuget, or container. ' +
         'Optionally filter by visibility (public, private, internal). ' +
-        'Paginate with page and per_page.',
+        'Paginate with page and per_page.  Docs: https://docs.github.com/en/rest/packages/packages#list-packages-for-the-authenticated-users-namespace',
       inputSchema: z.object({
         package_type: packageTypeSchema,
         visibility: z
@@ -53,9 +53,9 @@ export function registerPackagesTools(
     'get_package_for_authenticated_user',
     {
       description:
-        'Get a specific package owned by the authenticated user. ' +
+        'Get a specific package owned by the authenticated user.' +
         'Returns the package metadata including name, type, version count, visibility, ' +
-        'repository link, and timestamps. Requires the read:packages token scope.',
+        'repository link, and timestamps. Requires the read:packages token scope.  Docs: https://docs.github.com/en/rest/packages/packages#get-a-package-for-the-authenticated-user',
       inputSchema: z.object({
         package_type: packageTypeSchema,
         package_name: z.string().describe('The name of the package.'),
@@ -78,12 +78,12 @@ export function registerPackagesTools(
     'list_package_versions_for_authenticated_user',
     {
       description:
-        'List all versions of a package owned by the authenticated user. ' +
+        'List all versions of a package owned by the authenticated user.' +
         'Returns an array of package-version objects, each with an id, version name, ' +
         'creation/update timestamps, and type-specific metadata (e.g. container tags, npm dist-tags). ' +
         'Optionally filter by state: "active" (default) returns live versions; ' +
         '"deleted" returns versions that have been deleted but can still be restored within 30 days. ' +
-        'Requires the read:packages token scope.',
+        'Requires the read:packages token scope.  Docs: https://docs.github.com/en/rest/packages/packages#list-package-versions-for-a-package-owned-by-the-authenticated-user',
       inputSchema: z.object({
         package_type: packageTypeSchema,
         package_name: z.string().describe('The name of the package.'),
@@ -118,11 +118,11 @@ export function registerPackagesTools(
     'get_package_version_for_authenticated_user',
     {
       description:
-        'Get a specific version of a package owned by the authenticated user. ' +
+        'Get a specific version of a package owned by the authenticated user.' +
         'Returns the package-version object including the version id, name, ' +
         'creation/update timestamps, and type-specific metadata. ' +
         'Use list_package_versions_for_authenticated_user to find version ids. ' +
-        'Requires the read:packages token scope.',
+        'Requires the read:packages token scope.  Docs: https://docs.github.com/en/rest/packages/packages#get-a-package-version-for-the-authenticated-user',
       inputSchema: z.object({
         package_type: packageTypeSchema,
         package_name: z.string().describe('The name of the package.'),

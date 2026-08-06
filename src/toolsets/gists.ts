@@ -12,7 +12,7 @@ export function registerGistsTools(
     'list_gists',
     {
       description:
-        'List gists for the authenticated user. Returns an array of base-gist objects including id, description, public flag, file list (names and metadata, but not full content), and owner. Paginate with page and per_page. To get full file content for a specific gist, call get_gist with its id.',
+        'List gists for the authenticated user. Returns an array of base-gist objects including id, description, public flag, file list (names and metadata, but not full content), and owner. Paginate with page and per_page. To get full file content for a specific gist, call get_gist with its id. Docs: https://docs.github.com/en/rest/gists/gists#list-gists-for-the-authenticated-user',
       inputSchema: z.object({
         since: z
           .string()
@@ -37,7 +37,7 @@ export function registerGistsTools(
     'get_gist',
     {
       description:
-        'Get a single gist by its id. Returns a gist-simple object with full file content, description, public flag, owner, forks_url, commits_url, and history. File content is included inline (up to the truncation threshold — very large files include a raw_url instead).',
+        'Get a single gist by its id. Returns a gist-simple object with full file content, description, public flag, owner, forks_url, commits_url, and history. File content is included inline (up to the truncation threshold — very large files include a raw_url instead). Docs: https://docs.github.com/en/rest/gists/gists#get-a-gist',
       inputSchema: z.object({
         gist_id: z.string().describe('The unique identifier of the gist.'),
       }),
@@ -57,7 +57,7 @@ export function registerGistsTools(
       'create_gist',
       {
         description:
-          'Create a new gist. A gist is a shareable snippet or small file. Supply one or more files with their content; each file key is the filename (including extension). Set public to true to make the gist visible to all GitHub users, or false (default) for a secret gist (unlisted but accessible by direct URL).',
+          'Create a new gist. A gist is a shareable snippet or small file. Supply one or more files with their content; each file key is the filename (including extension). Set public to true to make the gist visible to all GitHub users, or false (default) for a secret gist (unlisted but accessible by direct URL). Docs: https://docs.github.com/en/rest/gists/gists#create-a-gist',
         inputSchema: z.object({
           files: z
             .record(
@@ -94,7 +94,7 @@ export function registerGistsTools(
       'update_gist',
       {
         description:
-          'Update an existing gist. You can change the description and/or update, rename, or delete individual files. To update a file, supply its current filename as the key with new content or a new filename. To delete a file, supply its current filename as the key with a null value. Files not mentioned in the request are left unchanged.',
+          'Update an existing gist. You can change the description and/or update, rename, or delete individual files. To update a file, supply its current filename as the key with new content or a new filename. To delete a file, supply its current filename as the key with a null value. Files not mentioned in the request are left unchanged. Docs: https://docs.github.com/en/rest/gists/gists#update-a-gist',
         inputSchema: z.object({
           gist_id: z.string().describe('The unique identifier of the gist to update.'),
           description: z.string().optional().describe('New description for the gist.'),
@@ -138,7 +138,7 @@ export function registerGistsTools(
     server.registerTool(
       'delete_gist',
       {
-        description: 'Delete a gist. This action is permanent and cannot be undone. Only the gist owner can delete it.',
+        description: 'Delete a gist. This action is permanent and cannot be undone. Only the gist owner can delete it. Docs: https://docs.github.com/en/rest/gists/gists#delete-a-gist',
         inputSchema: z.object({
           gist_id: z.string().describe('The unique identifier of the gist to delete.'),
         }),

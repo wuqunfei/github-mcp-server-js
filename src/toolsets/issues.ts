@@ -11,7 +11,7 @@ export function registerIssuesTools(
   server.registerTool(
     'list_issues',
     {
-      description: 'List issues in a GitHub repository.',
+      description: 'List issues in a GitHub repository. Docs: https://docs.github.com/en/rest/issues/issues#list-repository-issues',
       inputSchema: z.object({
         ...ownerRepoSchema,
         state: z.enum(['open', 'closed', 'all']).optional().describe('Filter by issue state (defaults to open)'),
@@ -45,7 +45,7 @@ export function registerIssuesTools(
   server.registerTool(
     'get_issue',
     {
-      description: 'Get a single issue in a GitHub repository.',
+      description: 'Get a single issue in a GitHub repository. Docs: https://docs.github.com/en/rest/issues/issues#get-an-issue',
       inputSchema: z.object({
         ...ownerRepoSchema,
         ...issueNumberSchema,
@@ -64,7 +64,7 @@ export function registerIssuesTools(
   server.registerTool(
     'list_comments',
     {
-      description: 'List comments on a GitHub issue.',
+      description: 'List comments on a GitHub issue. Docs: https://docs.github.com/en/rest/issues/comments#list-issue-comments',
       inputSchema: z.object({
         ...ownerRepoSchema,
         ...issueNumberSchema,
@@ -90,7 +90,7 @@ export function registerIssuesTools(
   server.registerTool(
     'list_labels',
     {
-      description: 'List all labels defined in a GitHub repository.',
+      description: 'List all labels defined in a GitHub repository. Docs: https://docs.github.com/en/rest/issues/labels#list-labels-for-a-repository',
       inputSchema: z.object({
         ...ownerRepoSchema,
         ...paginationSchema,
@@ -109,7 +109,7 @@ export function registerIssuesTools(
   server.registerTool(
     'list_labels_on_issue',
     {
-      description: 'List the labels currently applied to a GitHub issue.',
+      description: 'List the labels currently applied to a GitHub issue. Docs: https://docs.github.com/en/rest/issues/labels#list-labels-for-an-issue',
       inputSchema: z.object({
         ...ownerRepoSchema,
         ...issueNumberSchema,
@@ -136,7 +136,7 @@ export function registerIssuesTools(
     server.registerTool(
       'create_issue',
       {
-        description: 'Create a new issue in a GitHub repository.',
+        description: 'Create a new issue in a GitHub repository. Docs: https://docs.github.com/en/rest/issues/issues#create-an-issue',
         inputSchema: z.object({
           ...ownerRepoSchema,
           title: z.string().describe('Issue title'),
@@ -165,7 +165,7 @@ export function registerIssuesTools(
     server.registerTool(
       'update_issue',
       {
-        description: 'Update an existing issue in a GitHub repository.',
+        description: 'Update an existing issue in a GitHub repository. Docs: https://docs.github.com/en/rest/issues/issues#update-an-issue',
         inputSchema: z.object({
           ...ownerRepoSchema,
           ...issueNumberSchema,
@@ -203,7 +203,7 @@ export function registerIssuesTools(
     server.registerTool(
       'add_comment',
       {
-        description: 'Add a comment to a GitHub issue.',
+        description: 'Add a comment to a GitHub issue. Docs: https://docs.github.com/en/rest/issues/comments#create-an-issue-comment',
         inputSchema: z.object({
           ...ownerRepoSchema,
           ...issueNumberSchema,
@@ -223,7 +223,7 @@ export function registerIssuesTools(
     server.registerTool(
       'add_labels',
       {
-        description: "Add labels to a GitHub issue, keeping the issue's existing labels.",
+        description: "Add labels to a GitHub issue, keeping the issue's existing labels. Docs: https://docs.github.com/en/rest/issues/labels#add-labels-to-an-issue",
         inputSchema: z.object({
           ...ownerRepoSchema,
           ...issueNumberSchema,
@@ -243,7 +243,7 @@ export function registerIssuesTools(
     server.registerTool(
       'remove_label',
       {
-        description: 'Remove a single label from a GitHub issue.',
+        description: 'Remove a single label from a GitHub issue. Docs: https://docs.github.com/en/rest/issues/labels#remove-a-label-from-an-issue',
         inputSchema: z.object({
           ...ownerRepoSchema,
           ...issueNumberSchema,
@@ -263,7 +263,7 @@ export function registerIssuesTools(
     server.registerTool(
       'lock_issue',
       {
-        description: 'Lock a GitHub issue conversation to collaborators only.',
+        description: 'Lock a GitHub issue conversation to collaborators only. Docs: https://docs.github.com/en/rest/issues/issues#lock-an-issue',
         inputSchema: z.object({
           ...ownerRepoSchema,
           ...issueNumberSchema,
@@ -286,7 +286,7 @@ export function registerIssuesTools(
     server.registerTool(
       'unlock_issue',
       {
-        description: 'Unlock a previously locked GitHub issue conversation.',
+        description: 'Unlock a previously locked GitHub issue conversation. Docs: https://docs.github.com/en/rest/issues/issues#unlock-an-issue',
         inputSchema: z.object({
           ...ownerRepoSchema,
           ...issueNumberSchema,

@@ -23,7 +23,7 @@ export function registerOrgsTeamsTools(
   server.registerTool(
     'get_org',
     {
-      description: 'Get a GitHub organization by login.',
+      description: 'Get a GitHub organization by login. Docs: https://docs.github.com/en/rest/orgs/orgs#get-an-organization',
       inputSchema: z.object({ ...orgSchema }),
     },
     async ({ org }) => {
@@ -39,7 +39,7 @@ export function registerOrgsTeamsTools(
   server.registerTool(
     'list_org_members',
     {
-      description: 'List members of a GitHub organization.',
+      description: 'List members of a GitHub organization. Docs: https://docs.github.com/en/rest/orgs/members#list-organization-members',
       inputSchema: z.object({
         ...orgSchema,
         filter: z
@@ -69,7 +69,7 @@ export function registerOrgsTeamsTools(
   server.registerTool(
     'list_org_repos',
     {
-      description: 'List repositories in a GitHub organization.',
+      description: 'List repositories in a GitHub organization. Docs: https://docs.github.com/en/rest/repos/repos#list-organization-repositories',
       inputSchema: z.object({
         ...orgSchema,
         type: z
@@ -104,7 +104,7 @@ export function registerOrgsTeamsTools(
   server.registerTool(
     'list_teams',
     {
-      description: 'List teams in a GitHub organization.',
+      description: 'List teams in a GitHub organization. Docs: https://docs.github.com/en/rest/teams/teams#list-teams',
       inputSchema: z.object({
         ...orgSchema,
         ...paginationSchema,
@@ -123,7 +123,7 @@ export function registerOrgsTeamsTools(
   server.registerTool(
     'get_team_by_name',
     {
-      description: 'Get a GitHub team by its slug within an organization.',
+      description: 'Get a GitHub team by its slug within an organization. Docs: https://docs.github.com/en/rest/teams/teams#get-a-team-by-name',
       inputSchema: z.object({
         ...orgSchema,
         ...teamSlugSchema,
@@ -142,7 +142,7 @@ export function registerOrgsTeamsTools(
   server.registerTool(
     'list_team_members',
     {
-      description: 'List the members of a GitHub team.',
+      description: 'List the members of a GitHub team. Docs: https://docs.github.com/en/rest/teams/members#list-team-members',
       inputSchema: z.object({
         ...orgSchema,
         ...teamSlugSchema,
@@ -171,7 +171,7 @@ export function registerOrgsTeamsTools(
       'add_or_update_team_membership',
       {
         description:
-          'Add a user to a team or update their team role. Requires org-owner or team-maintainer permission.',
+          'Add a user to a team or update their team role. Requires org-owner or team-maintainer permission. Docs: https://docs.github.com/en/rest/teams/members#add-or-update-team-membership-for-a-user',
         inputSchema: z.object({
           ...orgSchema,
           ...teamSlugSchema,
@@ -201,7 +201,7 @@ export function registerOrgsTeamsTools(
       'remove_team_membership',
       {
         description:
-          'Remove a user from a team. Does not delete the user, only their team membership. Requires org-owner or team-admin permission.',
+          'Remove a user from a team. Does not delete the user, only their team membership. Requires org-owner or team-admin permission. Docs: https://docs.github.com/en/rest/teams/members#remove-team-membership-for-a-user',
         inputSchema: z.object({
           ...orgSchema,
           ...teamSlugSchema,

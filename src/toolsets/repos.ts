@@ -11,7 +11,7 @@ export function registerReposTools(
   server.registerTool(
     'get_repository',
     {
-      description: 'Get a GitHub repository by owner and name.',
+      description: 'Get a GitHub repository by owner and name. Docs: https://docs.github.com/en/rest/repos/repos#get-a-repository',
       inputSchema: z.object({
         ...ownerRepoSchema,
       }),
@@ -29,7 +29,7 @@ export function registerReposTools(
   server.registerTool(
     'list_branches',
     {
-      description: 'List branches in a GitHub repository.',
+      description: 'List branches in a GitHub repository. Docs: https://docs.github.com/en/rest/branches/branches#list-branches',
       inputSchema: z.object({
         ...ownerRepoSchema,
         ...paginationSchema,
@@ -48,7 +48,7 @@ export function registerReposTools(
   server.registerTool(
     'get_branch',
     {
-      description: 'Get a single branch in a GitHub repository.',
+      description: 'Get a single branch in a GitHub repository. Docs: https://docs.github.com/en/rest/branches/branches#get-a-branch',
       inputSchema: z.object({
         ...ownerRepoSchema,
         branch: z.string().describe('Branch name'),
@@ -67,7 +67,7 @@ export function registerReposTools(
   server.registerTool(
     'get_file_contents',
     {
-      description: 'Get the contents of a file or directory in a GitHub repository.',
+      description: 'Get the contents of a file or directory in a GitHub repository. Docs: https://docs.github.com/en/rest/repos/contents#get-repository-content',
       inputSchema: z.object({
         ...ownerRepoSchema,
         path: z.string().describe('Path to the file or directory'),
@@ -87,7 +87,7 @@ export function registerReposTools(
   server.registerTool(
     'list_commits',
     {
-      description: 'List commits in a GitHub repository.',
+      description: 'List commits in a GitHub repository. Docs: https://docs.github.com/en/rest/commits/commits#list-commits',
       inputSchema: z.object({
         ...ownerRepoSchema,
         sha: z.string().optional().describe('SHA or branch to list commits from'),
@@ -115,7 +115,7 @@ export function registerReposTools(
   server.registerTool(
     'get_commit',
     {
-      description: 'Get a single commit in a GitHub repository.',
+      description: 'Get a single commit in a GitHub repository. Docs: https://docs.github.com/en/rest/commits/commits#get-a-commit',
       inputSchema: z.object({
         ...ownerRepoSchema,
         ref: z.string().describe('Commit SHA, branch, or tag'),
@@ -134,7 +134,7 @@ export function registerReposTools(
   server.registerTool(
     'list_tags',
     {
-      description: 'List tags in a GitHub repository.',
+      description: 'List tags in a GitHub repository. Docs: https://docs.github.com/en/rest/repos/repos#list-repository-tags',
       inputSchema: z.object({
         ...ownerRepoSchema,
         ...paginationSchema,
@@ -154,7 +154,7 @@ export function registerReposTools(
     server.registerTool(
       'create_or_update_file',
       {
-        description: 'Create a new file or update an existing file in a GitHub repository.',
+        description: 'Create a new file or update an existing file in a GitHub repository. Docs: https://docs.github.com/en/rest/repos/contents#create-or-update-file-contents',
         inputSchema: z.object({
           ...ownerRepoSchema,
           path: z.string().describe('Path to the file'),

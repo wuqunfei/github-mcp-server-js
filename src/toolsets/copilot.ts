@@ -14,7 +14,7 @@ export function registerCopilotTools(
     'get_copilot_organization_details',
     {
       description:
-        'Get GitHub Copilot seat information and policy settings for an organization. ' +
+        'Get GitHub Copilot seat information and policy settings for an organization.' +
         'Returns seat breakdown (total, active, inactive, pending cancellation, pending invitation, ' +
         'added this cycle), subscription plan type (business or enterprise), and policy settings ' +
         '(public code suggestions filter, IDE chat, platform chat, CLI enablement, ' +
@@ -22,7 +22,7 @@ export function registerCopilotTools(
         'Requires the authenticated user to be an organization owner. ' +
         'Requires a token with manage_billing:copilot or read:org scope. ' +
         'Returns 404 if the organization does not have a Copilot Business or Enterprise subscription. ' +
-        'Returns 403 if the token lacks sufficient scope or the user is not an org owner.',
+        'Returns 403 if the token lacks sufficient scope or the user is not an org owner.  Docs: https://docs.github.com/en/rest/copilot/copilot-user-management#get-copilot-seat-information-and-settings-for-an-organization',
       inputSchema: z.object({
         org: z.string().describe('The organization login name (e.g. "my-company").'),
       }),
@@ -43,7 +43,7 @@ export function registerCopilotTools(
     'list_copilot_seats',
     {
       description:
-        'List all GitHub Copilot seat assignments for an organization. ' +
+        'List all GitHub Copilot seat assignments for an organization.' +
         'Returns each assigned seat with the assignee user details, the team or organization ' +
         'through which access was granted, the seat creation date, last Copilot activity timestamp, ' +
         'last editor used, and pending cancellation date if applicable. ' +
@@ -51,7 +51,7 @@ export function registerCopilotTools(
         'Requires a token with manage_billing:copilot or read:org scope. ' +
         'Returns 404 if the organization does not have a Copilot subscription. ' +
         'Returns 403 if the token lacks sufficient scope or the user is not an org owner. ' +
-        'Paginate with page and per_page (default 30, max 100).',
+        'Paginate with page and per_page (default 30, max 100).  Docs: https://docs.github.com/en/rest/copilot/copilot-user-management#list-all-copilot-seat-assignments-for-an-organization',
       inputSchema: z.object({
         org: z.string().describe('The organization login name (e.g. "my-company").'),
         ...paginationSchema,
@@ -73,7 +73,7 @@ export function registerCopilotTools(
     'get_copilot_seat_details_for_user',
     {
       description:
-        'Get GitHub Copilot seat assignment details for a specific member of an organization. ' +
+        'Get GitHub Copilot seat assignment details for a specific member of an organization.' +
         'Returns the seat creation date, last Copilot activity timestamp, last editor used, ' +
         'last authentication timestamp, pending cancellation date (if applicable), ' +
         'the team or organization granting access, and the Copilot plan type. ' +
@@ -83,7 +83,7 @@ export function registerCopilotTools(
         'Requires a token with manage_billing:copilot or read:org scope. ' +
         'Returns 404 if the user does not have a Copilot seat in this organization, ' +
         'or if the organization does not have a Copilot subscription. ' +
-        'Returns 403 if the token lacks sufficient scope or the user is not an org owner.',
+        'Returns 403 if the token lacks sufficient scope or the user is not an org owner.  Docs: https://docs.github.com/en/rest/copilot/copilot-user-management#get-copilot-seat-assignment-details-for-a-user',
       inputSchema: z.object({
         org: z.string().describe('The organization login name (e.g. "my-company").'),
         username: z

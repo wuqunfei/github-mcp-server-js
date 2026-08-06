@@ -21,7 +21,7 @@ export function registerActionsTools(
   server.registerTool(
     'list_workflows',
     {
-      description: 'List workflows in a repository.',
+      description: 'List workflows in a repository. Docs: https://docs.github.com/en/rest/actions/workflows#list-repository-workflows',
       inputSchema: z.object({ ...ownerRepoSchema, ...paginationSchema }),
     },
     async ({ owner, repo, page, per_page }) => {
@@ -42,7 +42,7 @@ export function registerActionsTools(
   server.registerTool(
     'get_workflow',
     {
-      description: 'Get a workflow by ID or filename.',
+      description: 'Get a workflow by ID or filename. Docs: https://docs.github.com/en/rest/actions/workflows#get-a-workflow',
       inputSchema: z.object({ ...ownerRepoSchema, ...workflowIdSchema }),
     },
     async ({ owner, repo, workflow_id }) => {
@@ -58,7 +58,7 @@ export function registerActionsTools(
   server.registerTool(
     'list_workflow_runs',
     {
-      description: 'List runs for a workflow.',
+      description: 'List runs for a workflow. Docs: https://docs.github.com/en/rest/actions/workflow-runs#list-workflow-runs-for-a-workflow',
       inputSchema: z.object({
         ...ownerRepoSchema,
         ...workflowIdSchema,
@@ -109,7 +109,7 @@ export function registerActionsTools(
   server.registerTool(
     'get_workflow_run',
     {
-      description: 'Get a workflow run by ID.',
+      description: 'Get a workflow run by ID. Docs: https://docs.github.com/en/rest/actions/workflow-runs#get-a-workflow-run',
       inputSchema: z.object({ ...ownerRepoSchema, ...runIdSchema }),
     },
     async ({ owner, repo, run_id }) => {
@@ -125,7 +125,7 @@ export function registerActionsTools(
   server.registerTool(
     'list_workflow_run_jobs',
     {
-      description: 'List jobs for a workflow run.',
+      description: 'List jobs for a workflow run. Docs: https://docs.github.com/en/rest/actions/workflow-jobs#list-jobs-for-a-workflow-run',
       inputSchema: z.object({
         ...ownerRepoSchema,
         ...runIdSchema,
@@ -153,7 +153,7 @@ export function registerActionsTools(
   server.registerTool(
     'list_workflow_run_artifacts',
     {
-      description: 'List artifacts produced by a workflow run.',
+      description: 'List artifacts produced by a workflow run. Docs: https://docs.github.com/en/rest/actions/artifacts#list-workflow-run-artifacts',
       inputSchema: z.object({ ...ownerRepoSchema, ...runIdSchema, ...paginationSchema }),
     },
     async ({ owner, repo, run_id, page, per_page }) => {
@@ -175,7 +175,7 @@ export function registerActionsTools(
   server.registerTool(
     'list_check_runs_for_ref',
     {
-      description: 'List check runs for a Git ref (SHA, branch, or tag).',
+      description: 'List check runs for a Git ref (SHA, branch, or tag). Docs: https://docs.github.com/en/rest/checks/runs#list-check-runs-for-a-git-reference',
       inputSchema: z.object({
         ...ownerRepoSchema,
         ref: z.string().describe('SHA, branch, or tag to list check runs for.'),
@@ -208,7 +208,7 @@ export function registerActionsTools(
     server.registerTool(
       'run_workflow',
       {
-        description: 'Trigger a workflow_dispatch event for a workflow.',
+        description: 'Trigger a workflow_dispatch event for a workflow. Docs: https://docs.github.com/en/rest/actions/workflows#create-a-workflow-dispatch-event',
         inputSchema: z.object({
           ...ownerRepoSchema,
           ...workflowIdSchema,
@@ -238,7 +238,7 @@ export function registerActionsTools(
     server.registerTool(
       'cancel_workflow_run',
       {
-        description: 'Cancel a workflow run.',
+        description: 'Cancel a workflow run. Docs: https://docs.github.com/en/rest/actions/workflow-runs#cancel-a-workflow-run',
         inputSchema: z.object({ ...ownerRepoSchema, ...runIdSchema }),
       },
       async ({ owner, repo, run_id }) => {
@@ -254,7 +254,7 @@ export function registerActionsTools(
     server.registerTool(
       'rerun_workflow_run',
       {
-        description: 'Re-run a workflow run.',
+        description: 'Re-run a workflow run. Docs: https://docs.github.com/en/rest/actions/workflow-runs#re-run-a-workflow',
         inputSchema: z.object({
           ...ownerRepoSchema,
           ...runIdSchema,
@@ -279,7 +279,7 @@ export function registerActionsTools(
     server.registerTool(
       'rerun_workflow_run_failed_jobs',
       {
-        description: 'Re-run only the failed jobs in a workflow run.',
+        description: 'Re-run only the failed jobs in a workflow run. Docs: https://docs.github.com/en/rest/actions/workflow-runs#re-run-failed-jobs-from-a-workflow-run',
         inputSchema: z.object({
           ...ownerRepoSchema,
           ...runIdSchema,
@@ -304,7 +304,7 @@ export function registerActionsTools(
     server.registerTool(
       'approve_workflow_run',
       {
-        description: 'Approve a workflow run that is awaiting fork-PR approval.',
+        description: 'Approve a workflow run that is awaiting fork-PR approval. Docs: https://docs.github.com/en/rest/actions/workflow-runs#approve-a-workflow-run-for-a-fork-pull-request',
         inputSchema: z.object({ ...ownerRepoSchema, ...runIdSchema }),
       },
       async ({ owner, repo, run_id }) => {

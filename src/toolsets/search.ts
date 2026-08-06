@@ -17,7 +17,7 @@ export function registerSearchTools(
     'search_repos',
     {
       description:
-        'Search GitHub repositories via various criteria. The q parameter accepts GitHub search qualifiers (e.g. "tetris language:assembly stars:>100"). Returns up to 100 results per page; GitHub caps total results at 1000.',
+        'Search GitHub repositories via various criteria. The q parameter accepts GitHub search qualifiers (e.g. "tetris language:assembly stars:>100"). Returns up to 100 results per page; GitHub caps total results at 1000. Docs: https://docs.github.com/en/rest/search/search#search-repositories',
       inputSchema: z.object({
         q: z.string().describe('Search query. Accepts GitHub search qualifiers like language:, stars:, forks:, user:, org:, topic:.'),
         sort: z
@@ -42,7 +42,7 @@ export function registerSearchTools(
     'search_code',
     {
       description:
-        'Search code across GitHub. The q parameter accepts GitHub code-search qualifiers (e.g. "addClass repo:jquery/jquery in:file language:js"). Sort and order are omitted because GitHub is closing down sortable code search; results are ranked by relevance.',
+        'Search code across GitHub. The q parameter accepts GitHub code-search qualifiers (e.g. "addClass repo:jquery/jquery in:file language:js"). Sort and order are omitted because GitHub is closing down sortable code search; results are ranked by relevance. Docs: https://docs.github.com/en/rest/search/search#search-code',
       inputSchema: z.object({
         q: z.string().describe('Search query. Accepts qualifiers like repo:, path:, language:, in:file, in:path.'),
         ...paginationSchema,
@@ -62,7 +62,7 @@ export function registerSearchTools(
     'search_commits',
     {
       description:
-        'Search commits on the default branch of repositories. The q parameter accepts GitHub commit-search qualifiers (e.g. "repo:octocat/Spoon-Knife css author:octocat").',
+        'Search commits on the default branch of repositories. The q parameter accepts GitHub commit-search qualifiers (e.g. "repo:octocat/Spoon-Knife css author:octocat"). Docs: https://docs.github.com/en/rest/search/search#search-commits',
       inputSchema: z.object({
         q: z.string().describe('Search query. Accepts qualifiers like repo:, author:, committer:, hash:, merge:, is:merge.'),
         sort: z
@@ -87,7 +87,7 @@ export function registerSearchTools(
     'search_issues',
     {
       description:
-        'Search GitHub issues AND pull requests. GitHub treats issues and pull requests as a single searchable resource; scope with is:issue or is:pull-request qualifiers inside q. Example q: "windows label:bug language:python state:open is:issue".',
+        'Search GitHub issues AND pull requests. GitHub treats issues and pull requests as a single searchable resource; scope with is:issue or is:pull-request qualifiers inside q. Example q: "windows label:bug language:python state:open is:issue". Docs: https://docs.github.com/en/rest/search/search#search-issues-and-pull-requests',
       inputSchema: z.object({
         q: z.string().describe('Search query. Use is:issue or is:pull-request to scope; accepts qualifiers like label:, language:, state:, author:, assignee:.'),
         sort: z
@@ -130,7 +130,7 @@ export function registerSearchTools(
     'search_users',
     {
       description:
-        'Search GitHub users. Only returns publicly visible users. The q parameter accepts GitHub user-search qualifiers (e.g. "tom repos:>42 followers:>1000").',
+        'Search GitHub users. Only returns publicly visible users. The q parameter accepts GitHub user-search qualifiers (e.g. "tom repos:>42 followers:>1000"). Docs: https://docs.github.com/en/rest/search/search#search-users',
       inputSchema: z.object({
         q: z.string().describe('Search query. Accepts qualifiers like type:user, type:org, repos:, followers:, location:, language:.'),
         sort: z

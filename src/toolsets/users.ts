@@ -12,7 +12,7 @@ export function registerUsersTools(
     'get_user_by_username',
     {
       description:
-        'Get publicly available information about a GitHub user by their login (username). Returns profile data including name, bio, location, public repo count, follower count, and following count. Returns a 404 if the user does not exist or is an Enterprise Managed User not visible to the caller.',
+        'Get publicly available information about a GitHub user by their login (username). Returns profile data including name, bio, location, public repo count, follower count, and following count. Returns a 404 if the user does not exist or is an Enterprise Managed User not visible to the caller. Docs: https://docs.github.com/en/rest/users/users#get-a-user',
       inputSchema: z.object({
         username: z.string().describe('The GitHub username (login) of the user to look up.'),
       }),
@@ -31,7 +31,7 @@ export function registerUsersTools(
     'get_authenticated_user',
     {
       description:
-        'Get the profile of the currently authenticated user (the owner of the GITHUB_TOKEN in use). Returns the same public fields as get_user_by_username plus private fields (private_gists, total_private_repos, plan, etc.) that are visible only to the token owner, subject to token scope.',
+        'Get the profile of the currently authenticated user (the owner of the GITHUB_TOKEN in use). Returns the same public fields as get_user_by_username plus private fields (private_gists, total_private_repos, plan, etc.) that are visible only to the token owner, subject to token scope. Docs: https://docs.github.com/en/rest/users/users#get-the-authenticated-user',
       inputSchema: z.object({}),
     },
     async () => {
@@ -48,7 +48,7 @@ export function registerUsersTools(
     'list_user_followers',
     {
       description:
-        'List the users who follow a given GitHub user. Returns an array of simple-user objects, each with login, id, avatar_url, and html_url. Paginate with page and per_page.',
+        'List the users who follow a given GitHub user. Returns an array of simple-user objects, each with login, id, avatar_url, and html_url. Paginate with page and per_page. Docs: https://docs.github.com/en/rest/users/followers#list-followers-of-a-user',
       inputSchema: z.object({
         username: z.string().describe('The GitHub username (login) whose followers to list.'),
         ...paginationSchema,
@@ -72,7 +72,7 @@ export function registerUsersTools(
     'list_user_following',
     {
       description:
-        'List the users that a given GitHub user follows. Returns an array of simple-user objects, each with login, id, avatar_url, and html_url. Paginate with page and per_page.',
+        'List the users that a given GitHub user follows. Returns an array of simple-user objects, each with login, id, avatar_url, and html_url. Paginate with page and per_page. Docs: https://docs.github.com/en/rest/users/followers#list-the-people-a-user-follows',
       inputSchema: z.object({
         username: z.string().describe('The GitHub username (login) whose following list to retrieve.'),
         ...paginationSchema,
@@ -96,7 +96,7 @@ export function registerUsersTools(
     'get_user_hovercard',
     {
       description:
-        'Get contextual information about a GitHub user (their "hovercard") as it would appear in the GitHub web UI. Returns a list of context messages (e.g. "Owns this repository", "Contributor"). Optionally scope the context to a specific subject (a repository, issue, pull request, or organization) by providing subject_type and subject_id together — both are required when either is supplied.',
+        'Get contextual information about a GitHub user (their "hovercard") as it would appear in the GitHub web UI. Returns a list of context messages (e.g. "Owns this repository", "Contributor"). Optionally scope the context to a specific subject (a repository, issue, pull request, or organization) by providing subject_type and subject_id together — both are required when either is supplied. Docs: https://docs.github.com/en/rest/users/users#get-contextual-information-for-a-user',
       inputSchema: z.object({
         username: z.string().describe('The GitHub username (login) to get hovercard context for.'),
         subject_type: z
