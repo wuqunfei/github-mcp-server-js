@@ -43,7 +43,7 @@ export function parseArgs(argv: string[]): CliArgs {
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const config = loadConfig(process.env);
-  const logger = createLogger(config.logLevel, config.logFormat);
+  const logger = createLogger(config.logLevel);
   const octokit = buildOctokitClient(config);
   const server = buildServer(octokit, config.permission, logger);
 

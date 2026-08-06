@@ -14,27 +14,17 @@ const LEVEL_RANK: Record<Config['logLevel'], number> = {
   error: 2,
 };
 
-function renderText(level: Config['logLevel'], event: string, fields: LogFields): string {
-  const suffix = Object.entries(fields)
-    .map(([k, v]) => `${k}=${typeof v === 'string' ? v : JSON.stringify(v)}`)
-    .join(' ');
-  return suffix ? `[${level}] ${event} ${suffix}\n` : `[${level}] ${event}\n`;
-}
-
-function renderJson(level: Config['logLevel'], event: string, fields: LogFields): string {
-  return `${JSON.stringify({ ts: new Date().toISOString(), level, event, ...fields })}\n`;
-}
-
-export function createLogger(
-  logLevel: Config['logLevel'],
-  logFormat: Config['logFormat'] = 'text',
-): Logger {
+// Always emits one JSON object per stderr line. Claude Desktop and any
+// log-aggregation pipeline (Datadog, CloudWatch, etc.) can parse them
+// directly. There is no plain-text mode.
+export function createLogger(logLevel: Config['logLevel']): Logger {
   const threshold = LEVEL_RANK[logLevel];
-  const render = logFormat === 'json' ? renderJson : renderText;
 
   function write(level: Config['logLevel'], event: string, fields?: LogFields): void {
     if (LEVEL_RANK[level] >= threshold) {
-      process.stderr.write(render(level, event, fields ?? {}));
+      process.stderr.write(
+        `${JSON.stringify({ ts: new Date().toISOString(), level, event, ...(fields ?? {}) })}\n`,
+      );
     }
   }
 
