@@ -26,3 +26,7 @@ README.md
 CHANGELOG.md
 LICENSE*
 *.md
+
+# Only assets/icon.png is bundled. Exclude the README hero and any other
+# artwork we add later — the pack script also asserts archive contents.
+assets/icon-248.png
