@@ -25,22 +25,40 @@ function truncate(s: string, max: number): string {
   return s.length > max ? `${s.slice(0, max)}…(+${s.length - max} more)` : s;
 }
 
-// Emit an MCP protocol log notification via ctx.mcpReq.log so that MCP
-// clients (Claude Desktop, etc.) receive the structured `data` field as
-// the "metadata" shown alongside each log line — instead of the raw
-// stderr text which the client can only show with { metadata: undefined }.
-// Silently no-op if the ctx doesn't expose the log() method, so unit tests
-// and non-MCP invocations still work.
+// Emit a raw `notifications/message` via ctx.mcpReq.notify so MCP clients
+// (Claude Desktop) receive the structured `data` field as the "metadata"
+// shown alongside each log line — instead of the raw stderr text which the
+// client can only show with { metadata: undefined }.
+//
+// We use notify() rather than the higher-level ctx.mcpReq.log() because
+// log() silently drops notifications until the client calls
+// `logging/setLevel` first, and Claude Desktop doesn't send it. notify()
+// bypasses that filter and always sends the wire notification.
+//
+// Silently no-ops if ctx doesn't expose notify() (unit tests, non-MCP
+// invocations). Failures are swallowed so a broken log channel never
+// breaks the tool call.
 async function mcpLog(
   ctx: unknown,
   level: 'debug' | 'info' | 'error',
   data: Record<string, unknown>,
 ): Promise<void> {
-  const log = (ctx as { mcpReq?: { log?: (l: string, d: unknown, logger?: string) => Promise<void> } })
-    ?.mcpReq?.log;
-  if (typeof log !== 'function') return;
+  const notify = (
+    ctx as {
+      mcpReq?: {
+        notify?: (n: {
+          method: string;
+          params: Record<string, unknown>;
+        }) => Promise<void>;
+      };
+    }
+  )?.mcpReq?.notify;
+  if (typeof notify !== 'function') return;
   try {
-    await log(level, data, SERVER_NAME);
+    await notify({
+      method: 'notifications/message',
+      params: { level, data, logger: SERVER_NAME },
+    });
   } catch {
     // MCP log failures must not break the tool call.
   }
