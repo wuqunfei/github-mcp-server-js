@@ -43,6 +43,8 @@ Currently implemented:
 - `codespaces` — list, inspect, create, start, and stop codespaces for the authenticated user
 - `projects` — list and inspect GitHub ProjectsV2 org projects, items, and fields
 - `code_security` — code scanning, secret scanning, Dependabot alerts, and security advisories
+- `actions` — GitHub Actions workflows, runs, jobs, artifacts, check runs, and run-triggering/cancel/rerun/approve
 
-Additional toolsets (actions, and more) are tracked in
-`docs/superpowers/specs/2026-08-05-github-mcp-server-design.md`.
+All 16 toolsets from the design are shipped. See
+`docs/superpowers/specs/2026-08-05-github-mcp-server-design.md`
+for the full architecture.

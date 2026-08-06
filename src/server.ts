@@ -1,5 +1,6 @@
 import { McpServer } from '@modelcontextprotocol/server';
 import type { Octokit } from 'octokit';
+import { registerActionsTools } from './toolsets/actions.js';
 import { registerActivityTools } from './toolsets/activity.js';
 import { registerAppsTools } from './toolsets/apps.js';
 import { registerCodeSecurityTools } from './toolsets/code_security.js';
@@ -40,6 +41,7 @@ export function buildServer(
   registerCodespacesTools(server, octokit, permission);
   registerProjectsTools(server, octokit, permission);
   registerCodeSecurityTools(server, octokit, permission);
+  registerActionsTools(server, octokit, permission);
 
   return server;
 }
