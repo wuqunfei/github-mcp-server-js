@@ -160,6 +160,50 @@ describe('registerReposTools', () => {
     expect(tools.map((tool) => tool.name)).toContain('create_branch');
   });
 
+  it('deletes a branch and returns a synthetic deleted:true result', async () => {
+    nock('https://api.github.com')
+      .delete('/repos/octocat/hello-world/git/refs/heads%2Ffeature-x')
+      .reply(204);
+
+    const client = await connectedClient(registerReposTools, 'read-write');
+    const result = await client.callTool({
+      name: 'delete_branch',
+      arguments: { owner: 'octocat', repo: 'hello-world', branch: 'feature-x' },
+    });
+
+    expect(result.isError).toBeFalsy();
+    const text = (result.content as Array<{ type: string; text: string }>)[0]?.text ?? '';
+    expect(JSON.parse(text)).toEqual({ deleted: true });
+  });
+
+  it('returns a tool error when deleteRef 404s, e.g. branch does not exist', async () => {
+    nock('https://api.github.com')
+      .delete('/repos/octocat/hello-world/git/refs/heads%2Fmissing-branch')
+      .reply(404, { message: 'Reference does not exist' });
+
+    const client = await connectedClient(registerReposTools, 'read-write');
+    const result = await client.callTool({
+      name: 'delete_branch',
+      arguments: { owner: 'octocat', repo: 'hello-world', branch: 'missing-branch' },
+    });
+
+    expect(result.isError).toBe(true);
+    const text = (result.content as Array<{ type: string; text: string }>)[0]?.text ?? '';
+    expect(text).toContain('Reference does not exist');
+  });
+
+  it('does not register delete_branch in read-only mode', async () => {
+    const client = await connectedClient(registerReposTools, 'read-only');
+    const { tools } = await client.listTools();
+    expect(tools.map((tool) => tool.name)).not.toContain('delete_branch');
+  });
+
+  it('registers delete_branch in read-write mode', async () => {
+    const client = await connectedClient(registerReposTools, 'read-write');
+    const { tools } = await client.listTools();
+    expect(tools.map((tool) => tool.name)).toContain('delete_branch');
+  });
+
   it('registers all 7 read-only tools regardless of permission', async () => {
     const client = await connectedClient(registerReposTools, 'read-only');
     const { tools } = await client.listTools();

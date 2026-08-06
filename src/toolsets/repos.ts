@@ -223,5 +223,25 @@ export function registerReposTools(
         }
       },
     );
+
+    server.registerTool(
+      'delete_branch',
+      {
+        description:
+          'Delete a branch from a GitHub repository. This action is permanent and cannot be undone. Docs: https://docs.github.com/en/rest/git/refs#delete-a-reference',
+        inputSchema: z.object({
+          ...ownerRepoSchema,
+          branch: z.string().describe('Name of the branch to delete (without the refs/heads/ prefix)'),
+        }),
+      },
+      async ({ owner, repo, branch }) => {
+        try {
+          await octokit.rest.git.deleteRef({ owner, repo, ref: `heads/${branch}` });
+          return toToolResult({ deleted: true });
+        } catch (error) {
+          return toToolError(error);
+        }
+      },
+    );
   }
 }
