@@ -18,6 +18,7 @@ Built exclusively on the two **first-party SDKs from the official providers** �
 - 🔒 **Secure by default** — flip `GITHUB_PERMISSION=read-only` and every mutating tool is never even registered.
 - 📦 **Three install channels** — npm (`npx`), Claude Desktop Extension (`.mcpb`), or unpacked extension (`.zip`).
 - ✅ **Signed releases** — every version built by GitHub Actions with npm provenance and Sigstore attestation.
+- 🧪 **Three-tier test suite** — 211 hermetic unit tests (nock-mocked) plus a 25-assertion read-only integration suite and 2 state-preserving write round-trips against the real GitHub API.
 - 🪶 **Zero heavy runtime** — pure Node 24+, no Docker, no Go, single-file bundle (~2 MB).
 
 ---
@@ -335,26 +336,57 @@ architecture.
 
 ## 🧪 Testing
 
-Unit tests are hermetic (nock-mocked, no network) and run on every commit:
+The suite is organized in three tiers, each with a distinct purpose and
+different guarantees. All three run against the same source; only the
+network scope and the presence of `GITHUB_TOKEN` differ.
+
+### 1. Unit tests — hermetic, mocked
+
+- **Location:** `test/unit/`
+- **Count:** 211 tests across 22 files
+- **Network:** none (nock intercepts every HTTP call; `test/setup.ts`
+  disables outbound connections so an accidental live call fails loudly)
+- **Runtime:** ~1.3 seconds
+- **When it runs:** on every commit via the pre-commit hook and every
+  push via CI
 
 ```bash
 npm test
 ```
 
-Integration tests spawn the built CLI and hit the real GitHub API. They
-self-skip when `GITHUB_TOKEN` is missing, so CI without a token stays green.
+### 2. Integration tests — read-only, real API
+
+- **Location:** `test/integration/read-only.test.ts`
+- **Count:** 25 assertions across all 16 toolsets against stable public
+  targets (`octocat/Hello-World`, `octokit/octokit.js`)
+- **Network:** hits `api.github.com` — spawns the built `dist/cli.js` over
+  stdio, exactly as a real MCP client would
+- **Safety:** read-only — no state mutations anywhere
+- **Skip behavior:** if `GITHUB_TOKEN` is missing, the whole suite is
+  `describe.skip`'d so CI without a token stays green
 
 ```bash
-# Read-only integration suite (safe — no state mutations).
 GITHUB_TOKEN=ghp_... npm run test:integration
-
-# Read-only + opt-in write round-trips (create+delete a scratch gist,
-# star+unstar a target while restoring the prior state).
-GITHUB_TOKEN=ghp_... npm run test:integration:write
 ```
 
-The scripts run `npm run build` first so the tests exercise the built
-`dist/cli.js` over stdio, matching real client usage.
+### 3. Integration tests — read + write, real API, opt-in
+
+- **Location:** `test/integration/write.test.ts` (plus everything in tier 2)
+- **Count:** all 25 read-only assertions + 2 write round-trips
+- **Round-trips (state-preserving):**
+  1. `create_gist → get_gist → update_gist → delete_gist` on a scratch
+     gist — asserts the deleted gist 404s after cleanup
+  2. `star_repo` / `unstar_repo` on a public repo, restoring the prior
+     starred state whichever way it started
+- **Opt-in gate:** requires `INTEGRATION_WRITE=1` — the write suite is
+  `describe.skip`'d otherwise, so it never mutates state by accident
+
+```bash
+INTEGRATION_WRITE=1 GITHUB_TOKEN=ghp_... npm run test:integration:write
+```
+
+Both integration scripts run `npm run build` first so the tests exercise
+the built `dist/cli.js` over stdio, matching real client usage exactly.
 
 ## 🔐 Build your own bundle (zero trust)
 
