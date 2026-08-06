@@ -136,7 +136,7 @@ Configuration is entirely via environment variables. Claude Desktop sets them fr
 |---|---|---|---|
 | `GITHUB_TOKEN` | Yes | — | Personal access token used for all GitHub API calls. |
 | `GITHUB_SERVER_URL` | No | `github.com` | GitHub host — bare hostname or full API base URL. Set this for GitHub Enterprise Server. |
-| `GITHUB_PERMISSION` | No | `read-write` | `read-only` (registers 76 read tools) or `read-write` (all 104). |
+| `GITHUB_PERMISSION` | No | `read-write` | `read-only` (registers 76 read tools) or `read-write` (all 105). |
 | `LOG_LEVEL` | No | `info` | `debug`, `info`, or `error`. Every tool call logs `tool_call` / `tool_ok` / `tool_error` as one JSON object per stderr line, plus an MCP `notifications/message` for the connected client. |
 
 ## 🧰 Toolsets
