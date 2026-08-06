@@ -19,6 +19,10 @@
     "lint": "eslint .",
     "spellcheck": "cspell \"**/*.{ts,md}\"",
     "test": "vitest run",
+    "pretest:integration": "npm run build",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "pretest:integration:write": "npm run build",
+    "test:integration:write": "INTEGRATION_WRITE=1 vitest run --config vitest.integration.config.ts",
     "prepare": "husky"
   },
   "dependencies": {

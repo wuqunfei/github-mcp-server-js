@@ -224,3 +224,26 @@ for public repositories).
 
 See `docs/superpowers/specs/2026-08-05-github-mcp-server-design.md` for the full
 architecture.
+
+## Testing
+
+Unit tests are hermetic (nock-mocked, no network) and run on every commit:
+
+```bash
+npm test
+```
+
+Integration tests spawn the built CLI and hit the real GitHub API. They
+self-skip when `GITHUB_TOKEN` is missing, so CI without a token stays green.
+
+```bash
+# Read-only integration suite (safe — no state mutations).
+GITHUB_TOKEN=ghp_... npm run test:integration
+
+# Read-only + opt-in write round-trips (create+delete a scratch gist,
+# star+unstar a target while restoring the prior state).
+GITHUB_TOKEN=ghp_... npm run test:integration:write
+```
+
+The scripts run `npm run build` first so the tests exercise the built
+`dist/cli.js` over stdio, matching real client usage.
