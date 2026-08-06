@@ -18,15 +18,21 @@ No custom HTTP client, no hand-rolled protocol layer.
 
 ## Why this project exists
 
-Three practical gaps in the current GitHub-MCP landscape:
+Four practical gaps in the current GitHub-MCP landscape:
 
-1. **Private / enterprise GitHub deployments rarely expose remote MCP.** GitHub Enterprise Server (GHES) and many managed enterprise setups don't yet ship a remote MCP endpoint. Users who need to reach a private repo from Claude fall back to running a local server themselves.
+- **No remote MCP on private / enterprise GitHub.**
+  GitHub Enterprise Server (GHES) and most managed enterprise deployments don't yet expose a remote MCP endpoint. Reaching a private repo from Claude means running a local server yourself.
 
-2. **The original Anthropic reference server is deprecated.** [`@modelcontextprotocol/server-github`](https://www.npmjs.com/package/@modelcontextprotocol/server-github) has been archived at [modelcontextprotocol/servers-archived](https://github.com/modelcontextprotocol/servers-archived/tree/main/src/github). It no longer receives fixes or new tools.
+- **The original Anthropic reference server is deprecated.**
+  [`@modelcontextprotocol/server-github`](https://www.npmjs.com/package/@modelcontextprotocol/server-github) is archived at [modelcontextprotocol/servers-archived](https://github.com/modelcontextprotocol/servers-archived/tree/main/src/github) — no fixes, no new tools.
 
-3. **GitHub's newer official [github-mcp-server](https://github.com/github/github-mcp-server) requires Docker + Go.** Many enterprise environments forbid installing Docker Desktop or a Go toolchain on developer machines for policy or licensing reasons. That leaves those users with no supported local GitHub MCP option.
+- **GitHub's newer official server needs Docker + Go.**
+  [github/github-mcp-server](https://github.com/github/github-mcp-server) ships as a Go binary you run via Docker. Many enterprise environments forbid Docker Desktop or a Go toolchain on developer machines for policy or licensing reasons, leaving those users with no supported local option.
 
-**`github-mcp-server-js` fills the gap: pure Node 24+ / TypeScript, single-file bundle, `npx`-installable, ships as both an npm package and a Claude Desktop Extension.**
+- **Broader tool coverage than the alternatives.**
+  104 tools across 16 toolsets (issues, pull requests, actions, code security, Copilot admin, ProjectsV2, and more) — a superset of what the archived `@modelcontextprotocol/server-github` shipped and what typical `gh`-CLI wrappers surface. See the [Toolsets](#toolsets) tables below for the full list.
+
+**`github-mcp-server-js` fills all four: pure Node 24+ / TypeScript, single-file bundle, `npx`-installable, ships as both an npm package and a Claude Desktop Extension.**
 
 ---
 
