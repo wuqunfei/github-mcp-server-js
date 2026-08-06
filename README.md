@@ -37,12 +37,18 @@ as a `.mcpb` (Claude Desktop Extension) bundle.
    in plaintext). The other three fields have sensible defaults.
 5. Click **Install**. All 104 tools are now available in every new chat.
 
+Each release also ships a `github-mcp-server-js-<version>.zip` — the exact
+same archive as the `.mcpb`, just renamed so you can inspect or extract it
+with a stock `unzip` toolchain without needing to know the `.mcpb`
+convention.
+
 To build the bundle locally instead:
 
 ```bash
 npm ci
 npm run pack:mcpb
 # → dist/github-mcp-server-js-<version>.mcpb
+# → dist/github-mcp-server-js-<version>.zip  (byte-identical copy)
 ```
 
 ## Toolsets

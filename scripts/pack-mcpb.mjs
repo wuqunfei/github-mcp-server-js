@@ -9,6 +9,7 @@
 //      assets/icon.png (no stray files leaked through .mcpbignore)
 import { spawnSync } from 'node:child_process';
 import {
+  copyFileSync,
   existsSync,
   mkdirSync,
   mkdtempSync,
@@ -113,7 +114,14 @@ async function main() {
   console.log(`▶ verifying archive contents`);
   assertArchiveEntries(outPath);
 
+  // A .mcpb is a zip archive with a specialized extension. Emit a byte-identical
+  // .zip copy so users who want to inspect/extract with a stock unzip toolchain
+  // don't need to know the .mcpb convention. Same file, same shasum.
+  const zipPath = outPath.replace(/\.mcpb$/, '.zip');
+  copyFileSync(outPath, zipPath);
+
   console.log(`✓ ${outPath}`);
+  console.log(`✓ ${zipPath}`);
 }
 
 // Only run main() when invoked as a script, not when imported for tests.

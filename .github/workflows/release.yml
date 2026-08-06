@@ -55,10 +55,12 @@ jobs:
           fi
       - name: Pack .mcpb bundle
         run: npm run pack:mcpb
-      - name: Upload .mcpb to the tag's GitHub Release
+      - name: Upload .mcpb + .zip to the tag's GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/github-mcp-server-js-*.mcpb
+          files: |
+            dist/github-mcp-server-js-*.mcpb
+            dist/github-mcp-server-js-*.zip
           fail_on_unmatched_files: true
           generate_release_notes: true
           prerelease: ${{ contains(github.ref_name, '-') }}
