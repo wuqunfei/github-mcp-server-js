@@ -25,7 +25,7 @@ Built exclusively on the two **first-party SDKs from the official providers** �
 - 🔒 **Secure by default** — flip `GITHUB_PERMISSION=read-only` and every mutating tool is never even registered.
 - 📦 **Three install channels** — npm (`npx`), Claude Desktop Extension (`.mcpb`), or unpacked extension (`.zip`).
 - ✅ **Signed releases** — every version built by GitHub Actions with npm provenance and Sigstore attestation.
-- 🧪 **Three-tier test suite** — 228 hermetic unit tests (nock-mocked) plus a 25-assertion read-only integration suite and 2 state-preserving write round-trips against the real GitHub API.
+- 🧪 **Three-tier test suite** — 200+ hermetic unit tests (nock-mocked) plus a 25-assertion read-only integration suite and 2 state-preserving write round-trips against the real GitHub API.
 - 🪶 **Zero heavy runtime** — pure Node 24+, no Docker, no Go, single-file bundle (~2 MB).
 
 ---
