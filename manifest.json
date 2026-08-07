@@ -2,7 +2,7 @@
   "manifest_version": "0.1",
   "name": "github-mcp-server-js",
   "display_name": "GitHub MCP Server (JS)",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "MCP server exposing 100+ GitHub REST tools across 16 toolsets, built on octokit.js.",
   "author": { "name": "Qunfei Wu" },
   "homepage": "https://github.com/wuqunfei/github-mcp-server-js",
