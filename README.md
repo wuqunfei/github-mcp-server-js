@@ -4,7 +4,7 @@
 <h2 align="center">Github-MCP-Server-JS</h2>
 
 <p align="center">
-  <strong>🚀 A pure Node.js GitHub MCP server for Claude Desktop and any MCP-compatible client — ⚡ 105 REST tools across 16 toolsets, 🚫 no Docker, 🚫 no Go, 🚫 no python. ✨</strong>
+  <strong>🚀 A pure Node.js GitHub MCP server for Claude Desktop and any MCP-compatible client — ⚡ 100+ REST tools across 16 toolsets, 🚫 no Docker, 🚫 no Go, 🚫 no python. ✨</strong>
 </p>
 
 <p align="center">
@@ -21,11 +21,11 @@ Built exclusively on the two **first-party SDKs from the official providers** �
 
 ## ✨ Highlights
 
-- 🧰 **Complete surface** — 105 tools across 16 toolsets (issues, pull requests, actions, code security, Copilot admin, ProjectsV2, and more).
+- 🧰 **Complete surface** — 100+ tools across 16 toolsets (issues, pull requests, actions, code security, Copilot admin, ProjectsV2, and more).
 - 🔒 **Secure by default** — flip `GITHUB_PERMISSION=read-only` and every mutating tool is never even registered.
 - 📦 **Three install channels** — npm (`npx`), Claude Desktop Extension (`.mcpb`), or unpacked extension (`.zip`).
 - ✅ **Signed releases** — every version built by GitHub Actions with npm provenance and Sigstore attestation.
-- 🧪 **Three-tier test suite** — 211 hermetic unit tests (nock-mocked) plus a 25-assertion read-only integration suite and 2 state-preserving write round-trips against the real GitHub API.
+- 🧪 **Three-tier test suite** — 200+ hermetic unit tests (nock-mocked) plus a 25-assertion read-only integration suite and 2 state-preserving write round-trips against the real GitHub API.
 - 🪶 **Zero heavy runtime** — pure Node 24+, no Docker, no Go, single-file bundle (~2 MB).
 
 ---
@@ -40,9 +40,9 @@ Five gaps in the current GitHub-MCP landscape:
 
 - 🐳 **The newer official server needs Docker + Go.** [github/github-mcp-server](https://github.com/github/github-mcp-server) ships as a Docker-run Go binary — often blocked by enterprise policy.
 
-- 🧰 **Broader tool coverage.** 105 tools across 16 toolsets — a superset of the archived `server-github` and typical `gh`-CLI wrappers. See [Toolsets](#toolsets) for the full list.
+- 🧰 **Broader tool coverage.** 100+ tools across 16 toolsets — a superset of the archived `server-github` and typical `gh`-CLI wrappers. See [Toolsets](#toolsets) for the full list.
 
-- 🔒 **Read-only mode is one env var.** `GITHUB_PERMISSION=read-only` registers only the 76 read tools; the 29 mutating operations (`create_issue`, `merge_pull_request`, `star_repo`, `run_workflow`, …) are never exposed to the model. Same binary, one variable, verified by tests.
+- 🔒 **Read-only mode is one env var.** `GITHUB_PERMISSION=read-only` registers only the 76 read tools; the 30 mutating operations (`create_issue`, `merge_pull_request`, `star_repo`, `run_workflow`, …) are never exposed to the model. Same binary, one variable, verified by tests.
 
 **`github-mcp-server-js` fills all five** — pure Node 24+ / TypeScript, single-file bundle, `npx`-installable, shipped as both an npm package and a Claude Desktop Extension.
 
@@ -81,10 +81,10 @@ Add this entry (create the file with `{ "mcpServers": {} }` if it doesn't exist)
 Only `GITHUB_TOKEN` is required — the other three are shown with their defaults so you can see every knob at a glance. Common adjustments:
 
 - **GitHub Enterprise Server:** `"GITHUB_SERVER_URL": "github.mycompany.com"` (bare hostname is fine; the server appends `/api/v3` automatically).
-- **Read-only mode:** `"GITHUB_PERMISSION": "read-only"` — the 29 mutating tools (`create_issue`, `merge_pull_request`, `star_repo`, `run_workflow`, …) are never registered.
+- **Read-only mode:** `"GITHUB_PERMISSION": "read-only"` — the 30 mutating tools (`create_issue`, `merge_pull_request`, `star_repo`, `run_workflow`, …) are never registered.
 - **Verbose logs:** `"LOG_LEVEL": "debug"` prints every request/response summary to stderr; Claude Desktop surfaces stderr in its MCP log. Every line is already JSON — no separate format flag needed.
 
-Restart Claude Desktop. All 105 tools become available in every new chat.
+Restart Claude Desktop. All 100+ tools become available in every new chat.
 
 The server can also run standalone from any terminal:
 
@@ -101,7 +101,7 @@ No config-file editing required; the token is stored in the OS keychain.
 2. Open **Claude Desktop → Settings → Extensions**.
 3. **Drag the `.mcpb` file** into the Extensions pane.
 4. Fill in your `GITHUB_TOKEN` (masked; stored in the macOS / Windows keychain, never in plaintext). The remaining fields carry sensible defaults.
-5. Click **Install**. All 105 tools are immediately available.
+5. Click **Install**. All 100+ tools are immediately available.
 
 ### 🛠️ Path 3 — Claude Desktop unpacked extension (`.zip`, developer mode)
 
@@ -136,12 +136,12 @@ Configuration is entirely via environment variables. Claude Desktop sets them fr
 |---|---|---|---|
 | `GITHUB_TOKEN` | Yes | — | Personal access token used for all GitHub API calls. |
 | `GITHUB_SERVER_URL` | No | `github.com` | GitHub host — bare hostname or full API base URL. Set this for GitHub Enterprise Server. |
-| `GITHUB_PERMISSION` | No | `read-write` | `read-only` (registers 76 read tools) or `read-write` (all 105). |
+| `GITHUB_PERMISSION` | No | `read-write` | `read-only` (registers 76 read tools) or `read-write` (all 100+). |
 | `LOG_LEVEL` | No | `info` | `debug`, `info`, or `error`. Every tool call logs `tool_call` / `tool_ok` / `tool_error` as one JSON object per stderr line, plus an MCP `notifications/message` for the connected client. |
 
 ## 🧰 Toolsets
 
-All 16 toolsets are shipped, exposing **105 tools** total. Write tools are only registered when `GITHUB_PERMISSION=read-write` (the default); `read-only` mode registers the read tools alone. The **Access** column indicates: **R** = registered in read-only mode; **W** = registered only in read-write mode.
+All 16 toolsets are shipped, exposing **100+ tools** total. Write tools are only registered when `GITHUB_PERMISSION=read-write` (the default); `read-only` mode registers the read tools alone. The **Access** column indicates: **R** = registered in read-only mode; **W** = registered only in read-write mode.
 
 ### 📁 `repos` — repositories, branches, commits, tags, file contents
 
@@ -156,6 +156,7 @@ All 16 toolsets are shipped, exposing **105 tools** total. Write tools are only 
 | `list_tags` | R | List tags in a repository. |
 | `create_or_update_file` | W | Create a new file or update an existing file in a repository. |
 | `create_branch` | W | Create a new branch from an existing branch or commit SHA. |
+| `delete_branch` | W | Delete a branch from a repository. |
 
 ### 🐛 `issues` — issue CRUD, comments, labels, conversation locking
 
@@ -344,7 +345,7 @@ network scope and the presence of `GITHUB_TOKEN` differ.
 ### 1. Unit tests — hermetic, mocked
 
 - **Location:** `test/unit/`
-- **Count:** 211 tests across 22 files
+- **Count:** 228 tests across 23 files
 - **Network:** none (nock intercepts every HTTP call; `test/setup.ts`
   disables outbound connections so an accidental live call fails loudly)
 - **Runtime:** ~1.3 seconds
@@ -420,7 +421,7 @@ npm run typecheck
 npm run lint
 npm run spellcheck
 npm audit --audit-level=high
-npm test                              # 211 hermetic unit tests, nock-mocked
+npm test                              # 228 hermetic unit tests, nock-mocked
 
 # 5. Build the self-contained CLI. Every runtime dependency is inlined
 #    into a single ~1.85 MB file — nothing loaded from node_modules at runtime.
@@ -453,7 +454,7 @@ Every published version is built by GitHub Actions from a tagged commit, [signed
 
 ## 🙏 Credits
 
-- **[octokit.js](https://github.com/octokit/octokit.js)** by GitHub — the REST/GraphQL client every tool wraps. Apache-2.0.
+- **[Octokit.js](https://github.com/octokit/octokit.js)** by GitHub — the REST/GraphQL client every tool wraps. Apache-2.0.
 - **[MCP TypeScript](https://github.com/modelcontextprotocol/typescript-sdk)** by Anthropic — the MCP server framework. MIT.
 - **Prior art:** [`@modelcontextprotocol/server-github`](https://github.com/modelcontextprotocol/servers-archived/tree/main/src/github) (archived, original Anthropic reference server) and [`github/github-mcp-server`](https://github.com/github/github-mcp-server) (GitHub's official Go / Docker implementation). Both remain excellent choices where their constraints fit.
 
