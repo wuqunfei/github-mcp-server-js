@@ -154,9 +154,11 @@ All 16 toolsets are shipped, exposing **100+ tools** total. Write tools are only
 | `list_commits` | R | List commits in a repository. |
 | `get_commit` | R | Get a single commit in a repository. |
 | `list_tags` | R | List tags in a repository. |
+| `get_tree` | R | Get a single tree in a repository, optionally recursive. |
 | `create_or_update_file` | W | Create a new file or update an existing file in a repository. |
 | `create_branch` | W | Create a new branch from an existing branch or commit SHA. |
 | `delete_branch` | W | Delete a branch from a repository. |
+| `create_tree` | W | Create a new tree object in a repository. |
 
 ### 🐛 `issues` — issue CRUD, comments, labels, conversation locking
 
