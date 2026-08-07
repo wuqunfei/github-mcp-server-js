@@ -272,5 +272,56 @@ export function registerReposTools(
         }
       },
     );
+
+    server.registerTool(
+      'create_tree',
+      {
+        description:
+          'Create a new tree object in a GitHub repository from a set of tree entries, optionally based on an existing tree. Docs: https://docs.github.com/en/rest/git/trees#create-a-tree',
+        inputSchema: z.object({
+          ...ownerRepoSchema,
+          tree: z
+            .array(
+              z
+                .object({
+                  path: z.string().describe('File referenced in the tree'),
+                  mode: z
+                    .enum(['100644', '100755', '040000', '160000', '120000'])
+                    .describe(
+                      'File mode: 100644 (file), 100755 (executable), 040000 (subdirectory), 160000 (submodule), 120000 (symlink)',
+                    ),
+                  type: z.enum(['blob', 'tree', 'commit']).describe('Type of the tree entry'),
+                  sha: z
+                    .string()
+                    .nullable()
+                    .optional()
+                    .describe(
+                      'SHA1 of the object to place at this path; set to null to delete this path from base_tree',
+                    ),
+                  content: z
+                    .string()
+                    .optional()
+                    .describe('Content for this file; GitHub creates the blob. Use either this or sha, not both'),
+                })
+                .refine((entry) => entry.sha !== undefined || entry.content !== undefined, {
+                  message: 'Each tree entry must include either sha or content',
+                }),
+            )
+            .describe('Tree entries specifying the new tree structure'),
+          base_tree: z
+            .string()
+            .optional()
+            .describe('SHA of an existing tree to use as the base for the new tree'),
+        }),
+      },
+      async ({ owner, repo, tree, base_tree }) => {
+        try {
+          const response = await octokit.rest.git.createTree({ owner, repo, tree, base_tree });
+          return toToolResult(response.data);
+        } catch (error) {
+          return toToolError(error);
+        }
+      },
+    );
   }
 }

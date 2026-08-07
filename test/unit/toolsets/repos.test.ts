@@ -259,6 +259,84 @@ describe('registerReposTools', () => {
     expect(tools.map((tool) => tool.name)).toContain('delete_branch');
   });
 
+  it('creates a tree from entries without base_tree', async () => {
+    nock('https://api.github.com')
+      .post('/repos/octocat/hello-world/git/trees', {
+        tree: [{ path: 'README.md', mode: '100644', type: 'blob', content: 'hello' }],
+      })
+      .reply(201, { sha: 'newtreesha', tree: [{ path: 'README.md' }] });
+
+    const client = await connectedClient(registerReposTools, 'read-write');
+    const result = await client.callTool({
+      name: 'create_tree',
+      arguments: {
+        owner: 'octocat',
+        repo: 'hello-world',
+        tree: [{ path: 'README.md', mode: '100644', type: 'blob', content: 'hello' }],
+      },
+    });
+
+    expect(result.isError).toBeFalsy();
+    const text = (result.content as Array<{ type: string; text: string }>)[0]?.text ?? '';
+    expect(JSON.parse(text)).toMatchObject({ sha: 'newtreesha' });
+  });
+
+  it('creates a tree with base_tree supplied', async () => {
+    nock('https://api.github.com')
+      .post('/repos/octocat/hello-world/git/trees', {
+        tree: [{ path: 'README.md', mode: '100644', type: 'blob', sha: 'blobsha123' }],
+        base_tree: 'basetreesha',
+      })
+      .reply(201, { sha: 'newtreesha2', tree: [] });
+
+    const client = await connectedClient(registerReposTools, 'read-write');
+    const result = await client.callTool({
+      name: 'create_tree',
+      arguments: {
+        owner: 'octocat',
+        repo: 'hello-world',
+        tree: [{ path: 'README.md', mode: '100644', type: 'blob', sha: 'blobsha123' }],
+        base_tree: 'basetreesha',
+      },
+    });
+
+    expect(result.isError).toBeFalsy();
+    const text = (result.content as Array<{ type: string; text: string }>)[0]?.text ?? '';
+    expect(JSON.parse(text)).toMatchObject({ sha: 'newtreesha2' });
+  });
+
+  it('returns a tool error when createTree fails, e.g. invalid entry', async () => {
+    nock('https://api.github.com')
+      .post('/repos/octocat/hello-world/git/trees')
+      .reply(422, { message: 'Tree SHA blobsha123 is invalid' });
+
+    const client = await connectedClient(registerReposTools, 'read-write');
+    const result = await client.callTool({
+      name: 'create_tree',
+      arguments: {
+        owner: 'octocat',
+        repo: 'hello-world',
+        tree: [{ path: 'README.md', mode: '100644', type: 'blob', sha: 'blobsha123' }],
+      },
+    });
+
+    expect(result.isError).toBe(true);
+    const text = (result.content as Array<{ type: string; text: string }>)[0]?.text ?? '';
+    expect(text).toContain('Tree SHA blobsha123 is invalid');
+  });
+
+  it('does not register create_tree in read-only mode', async () => {
+    const client = await connectedClient(registerReposTools, 'read-only');
+    const { tools } = await client.listTools();
+    expect(tools.map((tool) => tool.name)).not.toContain('create_tree');
+  });
+
+  it('registers create_tree in read-write mode', async () => {
+    const client = await connectedClient(registerReposTools, 'read-write');
+    const { tools } = await client.listTools();
+    expect(tools.map((tool) => tool.name)).toContain('create_tree');
+  });
+
   it('registers all 8 read-only tools regardless of permission', async () => {
     const client = await connectedClient(registerReposTools, 'read-only');
     const { tools } = await client.listTools();
