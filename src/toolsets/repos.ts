@@ -151,6 +151,35 @@ export function registerReposTools(
     },
   );
 
+  server.registerTool(
+    'get_tree',
+    {
+      description:
+        'Get a single tree in a GitHub repository using the SHA1 value or ref name for that tree. Docs: https://docs.github.com/en/rest/git/trees#get-a-tree',
+      inputSchema: z.object({
+        ...ownerRepoSchema,
+        tree_sha: z.string().describe('SHA1 value or ref (branch/tag) name of the tree'),
+        recursive: z
+          .boolean()
+          .optional()
+          .describe('If true, recursively return all objects/subtrees referenced by the tree'),
+      }),
+    },
+    async ({ owner, repo, tree_sha, recursive }) => {
+      try {
+        const response = await octokit.rest.git.getTree({
+          owner,
+          repo,
+          tree_sha,
+          recursive: recursive ? 'true' : undefined,
+        });
+        return toToolResult(response.data);
+      } catch (error) {
+        return toToolError(error);
+      }
+    },
+  );
+
   if (permission === 'read-write') {
     server.registerTool(
       'create_or_update_file',
