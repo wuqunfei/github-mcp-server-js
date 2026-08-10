@@ -4,7 +4,7 @@
 <h2 align="center">Github-MCP-Server-JS</h2>
 
 <p align="center">
-  <strong>🚀 A pure Node.js GitHub MCP server for Claude Desktop and any MCP-compatible client — ⚡ 104 REST tools across 16 toolsets, 🚫 no Docker, 🚫 no Go, 🚫 no python. ✨</strong>
+  <strong>🚀 A pure Node.js GitHub MCP server for Claude Desktop and any MCP-compatible client — ⚡ 104 REST tools across 16 toolsets, 🚫 no Docker, 🚫 no Go, 🚫 no Python. ✨</strong>
 </p>
 
 <p align="center">
@@ -13,6 +13,7 @@
   <a href="./LICENSE"><img src="https://img.shields.io/npm/l/github-mcp-server-js.svg" alt="license" /></a>
   <a href="https://github.com/wuqunfei/github-mcp-server-js/actions/workflows/ci.yml"><img src="https://github.com/wuqunfei/github-mcp-server-js/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <a href="https://socket.dev/npm/package/github-mcp-server-js"><img src="https://badge.socket.dev/npm/package/github-mcp-server-js" alt="Socket score" /></a>  
+ <a href="https://github.com/wuqunfei/github-mcp-server-js"><img src="https://img.shields.io/github/stars/wuqunfei/github-mcp-server-js.svg" alt="GitHub stars" /></a>
 </p>
 
 Built exclusively on the two **first-party SDKs from the official providers** — no custom HTTP client, no hand-rolled protocol layer:
