@@ -4,14 +4,16 @@
 <h2 align="center">Github-MCP-Server-JS</h2>
 
 <p align="center">
-  <strong>🚀 A pure Node.js GitHub MCP server for Claude Desktop and any MCP-compatible client — ⚡ 100+ REST tools across 16 toolsets, 🚫 no Docker, 🚫 no Go, 🚫 no python. ✨</strong>
+  <strong>🚀 A pure Node.js GitHub MCP server for Claude Desktop and any MCP-compatible client — ⚡ 104 REST tools across 16 toolsets, 🚫 no Docker, 🚫 no Go, 🚫 no Python. ✨</strong>
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/github-mcp-server-js"><img src="https://img.shields.io/npm/v/github-mcp-server-js.svg" alt="npm version" /></a>
   <a href="https://nodejs.org/"><img src="https://img.shields.io/node/v/github-mcp-server-js.svg" alt="node" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/npm/l/github-mcp-server-js.svg" alt="license" /></a>
   <a href="https://github.com/wuqunfei/github-mcp-server-js/actions/workflows/ci.yml"><img src="https://github.com/wuqunfei/github-mcp-server-js/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://socket.dev/npm/package/github-mcp-server-js"><img src="https://badge.socket.dev/npm/package/github-mcp-server-js" alt="Socket score" /></a>  
+  <a href="https://www.npmjs.com/package/github-mcp-server-js"><img src="https://img.shields.io/npm/dw/github-mcp-server-js" alt="NPM Downloads" /></a>
+  <a href="https://github.com/wuqunfei/github-mcp-server-js"><img src="https://img.shields.io/github/stars/wuqunfei/github-mcp-server-js.svg" alt="GitHub stars" /></a>
 </p>
 
 Built exclusively on the two **first-party SDKs from the official providers** — no custom HTTP client, no hand-rolled protocol layer:
@@ -347,7 +349,7 @@ network scope and the presence of `GITHUB_TOKEN` differ.
 ### 1. Unit tests — hermetic, mocked
 
 - **Location:** `test/unit/`
-- **Count:** 228 tests across 23 files
+- **Count:** 200 + 
 - **Network:** none (nock intercepts every HTTP call; `test/setup.ts`
   disables outbound connections so an accidental live call fails loudly)
 - **Runtime:** ~1.3 seconds
@@ -423,7 +425,7 @@ npm run typecheck
 npm run lint
 npm run spellcheck
 npm audit --audit-level=high
-npm test                              # 228 hermetic unit tests, nock-mocked
+npm test
 
 # 5. Build the self-contained CLI. Every runtime dependency is inlined
 #    into a single ~1.85 MB file — nothing loaded from node_modules at runtime.
