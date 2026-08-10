@@ -8,3 +8,4 @@ dist/
 dist/*.mcpb
 dist/*.zip
 .husky/
+docs/
