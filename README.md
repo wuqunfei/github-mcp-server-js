@@ -12,6 +12,7 @@
   <a href="https://nodejs.org/"><img src="https://img.shields.io/node/v/github-mcp-server-js.svg" alt="node" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/npm/l/github-mcp-server-js.svg" alt="license" /></a>
   <a href="https://github.com/wuqunfei/github-mcp-server-js/actions/workflows/ci.yml"><img src="https://github.com/wuqunfei/github-mcp-server-js/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://socket.dev/npm/package/github-mcp-server-js"><img src="https://badge.socket.dev/npm/package/github-mcp-server-js" alt="Socket score" /></a>  
 </p>
 
 Built exclusively on the two **first-party SDKs from the official providers** — no custom HTTP client, no hand-rolled protocol layer:
